@@ -244,6 +244,22 @@ const danceStyles = [
     }
 ];
 
+// Добавляем массив демонических фраз
+const demonicPhrases = [
+    { ru: "Добро пожаловать в вечность", lat: "Bene venit ad aeternitatem" },
+    { ru: "Твоя душа теперь принадлежит тьме", lat: "Anima tua nunc tenebris pertinet" },
+    { ru: "Нет пути назад", lat: "Non est via retrorsum" },
+    { ru: "Врата ада открыты", lat: "Portae inferni apertae sunt" },
+    { ru: "Тьма поглотит всё", lat: "Tenebrae consumunt omnia" },
+    { ru: "Вечное проклятие", lat: "Maledictio aeterna" },
+    { ru: "Смерть - это только начало", lat: "Mors est initium solum" },
+    { ru: "Кровь за кровь", lat: "Sanguis pro sanguine" },
+    { ru: "Царство теней ждёт", lat: "Regnum umbrarum expectat" },
+    { ru: "Печать дьявола", lat: "Sigillum diaboli" },
+    { ru: "Время искупления", lat: "Tempus redemptionis" },
+    { ru: "Вечная тьма", lat: "Tenebrae aeternae" }
+];
+
 // Функция для получения случайного неиспользованного мема
 function getRandomUnusedMeme() {
     // Если все мемы использованы, очищаем множество
@@ -780,19 +796,12 @@ function applyChaosEffects() {
     const form = document.querySelector('form');
     const inputs = document.querySelectorAll('input, select, textarea');
     
-    // Добавляем класс для танцующей формы
-    form.classList.add('form-dancing');
+    // Удаляем класс для танцующей формы
+    form.classList.remove('form-dancing');
     
     switch(chaosLevel) {
         case 1: // Начальный уровень хаоса
             console.log('Initializing chaos level 1');
-            // Простой танец
-            const danceStyle = danceStyles[0];
-            form.style.animation = danceStyle.formAnimation;
-            inputs.forEach(input => {
-                input.style.animation = danceStyle.inputAnimation;
-            });
-            
             // Фоновые эффекты
             body.style.animation = 'backgroundChange 5s infinite';
             container.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
@@ -800,13 +809,6 @@ function applyChaosEffects() {
             break;
             
         case 2:
-            // Сальса
-            const salsaStyle = danceStyles[1];
-            form.style.animation = salsaStyle.formAnimation;
-            inputs.forEach(input => {
-                input.style.animation = salsaStyle.inputAnimation;
-            });
-            
             // Случайное изменение цветов полей в такт
             setInterval(() => {
                 inputs.forEach(input => {
@@ -814,44 +816,23 @@ function applyChaosEffects() {
                         input.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 90%)`;
                     }
                 });
-            }, salsaStyle.duration * 1000 / 4);
+            }, 1000);
             break;
             
         case 3:
-            // Вальс
-            const waltzStyle = danceStyles[2];
-            form.style.animation = waltzStyle.formAnimation;
-            inputs.forEach(input => {
-                input.style.animation = waltzStyle.inputAnimation;
-            });
-            
-            // Добавляем элегантное вращение контейнера
-            container.style.animation = `float ${waltzStyle.duration}s infinite ease-in-out`;
+            // Добавляем кислотные эффекты
+            container.style.animation = 'acidBackground 3s infinite';
             break;
             
         case 4:
-            // Танго
-            const tangoStyle = danceStyles[3];
-            form.style.animation = tangoStyle.formAnimation;
-            inputs.forEach(input => {
-                input.style.animation = tangoStyle.inputAnimation;
-            });
-            
             // Добавляем страстные эффекты
             setInterval(() => {
                 const hue = Math.random() * 60 + 300; // оттенки красного
                 container.style.backgroundColor = `hsla(${hue}, 70%, 50%, 0.1)`;
-            }, tangoStyle.duration * 1000 / 8);
+            }, 500);
             break;
             
         case 5:
-            // Брейк-данс
-            const breakdanceStyle = danceStyles[4];
-            form.style.animation = breakdanceStyle.formAnimation;
-            inputs.forEach(input => {
-                input.style.animation = breakdanceStyle.inputAnimation;
-            });
-            
             // Добавляем экстремальные эффекты
             setInterval(() => {
                 const effects = [
@@ -859,8 +840,10 @@ function applyChaosEffects() {
                     `scale(${0.95 + Math.random() * 0.1})`,
                     `skew(${Math.random() * 4 - 2}deg)`
                 ];
-                form.style.transform += effects.join(' ');
-            }, breakdanceStyle.duration * 1000 / 16);
+                inputs.forEach(input => {
+                    input.style.transform = effects.join(' ');
+                });
+            }, 200);
             break;
     }
 }
@@ -1159,6 +1142,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Создаем кринжометр
     createCringemeter();
+
+    // Добавляем обработку кислотных эффектов для полей формы
+    const formControls = document.querySelectorAll('.form-control');
+    
+    formControls.forEach(input => {
+        // Обновляем случайные значения для поворота и искажения
+        input.addEventListener('mousemove', () => {
+            input.style.setProperty('--random-rotate', Math.random() * 20 - 10);
+            input.style.setProperty('--random-skew', Math.random() * 10 - 5);
+        });
+
+        // Добавляем эффекты при вводе
+        input.addEventListener('input', () => {
+            const effects = [
+                () => {
+                    input.style.transform = `rotate(${Math.random() * 40 - 20}deg) scale(${0.9 + Math.random() * 0.3})`;
+                },
+                () => {
+                    input.style.transform = `skew(${Math.random() * 20 - 10}deg, ${Math.random() * 20 - 10}deg)`;
+                },
+                () => {
+                    input.style.transform = `perspective(100px) rotateX(${Math.random() * 20 - 10}deg)`;
+                },
+                () => {
+                    input.style.filter = `hue-rotate(${Math.random() * 360}deg) brightness(${1 + Math.random()})`;
+                }
+            ];
+            
+            effects[Math.floor(Math.random() * effects.length)]();
+        });
+
+        // Добавляем случайное мерцание
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                input.style.filter = `hue-rotate(${Math.random() * 360}deg) brightness(${1 + Math.random() * 0.5})`;
+                input.style.transform = `rotate(${Math.random() * 10 - 5}deg) scale(${0.95 + Math.random() * 0.1})`;
+            }
+        }, 100 + Math.random() * 200);
+    });
+
+    // Создаем гирлянду
+    createGarland();
+
+    // Добавляем функцию для создания эффекта размытия курсора
+    createCursorBlur();
 });
 
 // Запрещаем правый клик
@@ -1220,13 +1248,13 @@ function createCringemeter() {
     updateHeartbeat();
 }
 
-// Функция обновления частоты сердцебиения
+// Обновляем функцию updateHeartbeat
 function updateHeartbeat() {
     const heartIcon = document.querySelector('.heart-icon');
     const heartRate = document.querySelector('.heart-rate');
-    const cringemeter = document.querySelector('.cringemeter');
+    const container = document.querySelector('.container');
     
-    if (!heartIcon || !heartRate) return;
+    if (!heartIcon || !heartRate || !container) return;
     
     // Обновляем текст
     heartRate.textContent = `${currentHeartRate} BPM`;
@@ -1234,12 +1262,367 @@ function updateHeartbeat() {
     // Обновляем анимацию сердцебиения
     heartIcon.style.animation = `heartbeat ${60/currentHeartRate}s infinite`;
     
-    // Добавляем эффекты при высоком пульсе
-    if (currentHeartRate >= 180) {
-        cringemeter.classList.add('danger');
-        heartRate.style.color = '#ff0000';
+    // Определяем уровень BPM
+    if (currentHeartRate >= 220) {
+        // Очищаем все элементы
+        clearAllElements();
+        
+        // Применяем финальный адский дизайн
+        container.setAttribute('data-bpm-level', 'final');
+        document.body.setAttribute('data-bpm-level', 'final');
+        
+        // Принудительно применяем стили для формы
+        container.style.cssText = `
+            background: linear-gradient(rgba(20, 0, 0, 0.95), rgba(40, 0, 0, 0.95)) !important;
+            border: 4px solid #ff0000 !important;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7),
+                       0 0 60px rgba(255, 0, 0, 0.4),
+                       inset 0 0 30px rgba(255, 0, 0, 0.5) !important;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
+        `;
+        
+        // Применяем стили для фона
+        document.body.style.cssText = `
+            background: #000 !important;
+            animation: none !important;
+            transition: none !important;
+        `;
+        
+        // Стабилизируем форму и все поля ввода
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.style.cssText = `
+                background: #1a0000 !important;
+                color: #ff3333 !important;
+                border: 2px solid #800000 !important;
+                transform: none !important;
+                animation: none !important;
+                transition: none !important;
+            `;
+        });
+
+        // Создаем новые демонические фразы
+        if (Math.random() > 0.7) {
+            createDemonicPhrase();
+        }
+        
+    } else if (currentHeartRate >= 200) {
+        // Обычная логика для перехода
+        const intensity = (currentHeartRate - 200) / 20;
+        container.setAttribute('data-bpm-level', '5');
+        document.body.setAttribute('data-bpm-level', '5');
+        
+        const hue = 0;
+        const saturation = 100 + (1 - intensity) * 150;
+        const lightness = 50 - intensity * 40;
+        document.body.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     } else {
-        cringemeter.classList.remove('danger');
-        heartRate.style.color = '#ff3366';
+        // Обычная логика для других уровней BPM
+        let bpmLevel;
+        if (currentHeartRate < 108) {
+            bpmLevel = 1;
+        } else if (currentHeartRate < 140) {
+            bpmLevel = 2;
+        } else if (currentHeartRate < 170) {
+            bpmLevel = 3;
+        } else {
+            bpmLevel = 4;
+        }
+        container.setAttribute('data-bpm-level', bpmLevel);
+        document.body.setAttribute('data-bpm-level', bpmLevel);
     }
+}
+
+// Функция создания демонической фразы
+function createDemonicPhrase() {
+    const phrases = [
+        { latin: "In tenebris veritas", russian: "Во тьме истина" },
+        { latin: "Sanguis vita est", russian: "Кровь есть жизнь" },
+        { latin: "Mortis porta", russian: "Врата смерти" },
+        { latin: "Daemon invictus", russian: "Непобедимый демон" },
+        { latin: "Nox aeterna", russian: "Вечная ночь" },
+        { latin: "Infernum expectat", russian: "Ад ждёт" },
+        { latin: "Anima perdita", russian: "Потерянная душа" },
+        { latin: "Tenebrae vincunt", russian: "Тьма побеждает" }
+    ];
+
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    const container = document.querySelector('.container');
+    
+    if (!container) return;
+
+    // Удаляем старые фразы, если их больше 2
+    const existingPhrases = document.querySelectorAll('.demonic-phrase');
+    if (existingPhrases.length > 2) {
+        existingPhrases[0].remove();
+    }
+
+    const phraseElement = document.createElement('div');
+    phraseElement.className = 'demonic-phrase';
+    
+    // Случайное позиционирование вокруг формы на большем расстоянии
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 250 + Math.random() * 150; // Увеличиваем расстояние
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+    
+    phraseElement.style.cssText = `
+        position: fixed !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) !important;
+        color: #ff0000 !important;
+        font-family: "Times New Roman", serif !important;
+        text-align: center !important;
+        z-index: 1000 !important;
+        pointer-events: none !important;
+        text-shadow: 0 0 15px rgba(255, 0, 0, 0.8),
+                    0 0 30px rgba(255, 0, 0, 0.5) !important;
+        white-space: nowrap !important;
+    `;
+
+    phraseElement.innerHTML = `
+        <div class="latin" style="
+            font-size: 24px !important;
+            font-style: italic !important;
+            margin-bottom: 5px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+        ">${phrase.latin}</div>
+        <div class="russian" style="
+            font-size: 18px !important;
+            opacity: 0.9 !important;
+            letter-spacing: 1px !important;
+        ">${phrase.russian}</div>
+    `;
+
+    document.body.appendChild(phraseElement); // Добавляем к body вместо container
+
+    // Удаляем фразу через случайное время
+    setTimeout(() => {
+        phraseElement.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => phraseElement.remove(), 500);
+    }, 2000 + Math.random() * 1000);
+}
+
+// Функция для создания гирлянды
+function createGarland() {
+    const container = document.querySelector('.container');
+    
+    // Создаем контейнеры для лампочек
+    const garlandTop = document.createElement('div');
+    garlandTop.className = 'garland-top';
+    
+    const garlandBottom = document.createElement('div');
+    garlandBottom.className = 'garland-bottom';
+    
+    const garlandLeft = document.createElement('div');
+    garlandLeft.className = 'garland-left';
+    
+    const garlandRight = document.createElement('div');
+    garlandRight.className = 'garland-right';
+    
+    // Количество лампочек на каждой стороне
+    const horizontalLights = 40; // Уменьшили в 2 раза (было 80)
+    const verticalLights = 50;
+    
+    // Добавляем лампочки на верхнюю и нижнюю стороны
+    for (let i = 0; i < horizontalLights; i++) {
+        const topLight = document.createElement('div');
+        topLight.className = 'garland-light';
+        topLight.style.setProperty('--light-index', i);
+        garlandTop.appendChild(topLight);
+        
+        const bottomLight = document.createElement('div');
+        bottomLight.className = 'garland-light';
+        bottomLight.style.setProperty('--light-index', horizontalLights - i - 1);
+        garlandBottom.appendChild(bottomLight);
+    }
+    
+    // Добавляем лампочки на левую и правую стороны
+    for (let i = 0; i < verticalLights; i++) {
+        const leftLight = document.createElement('div');
+        leftLight.className = 'garland-light';
+        leftLight.style.setProperty('--light-index', i + horizontalLights);
+        garlandLeft.appendChild(leftLight);
+        
+        const rightLight = document.createElement('div');
+        rightLight.className = 'garland-light';
+        rightLight.style.setProperty('--light-index', horizontalLights + verticalLights - i - 1);
+        garlandRight.appendChild(rightLight);
+    }
+    
+    // Добавляем все элементы к контейнеру
+    container.appendChild(garlandTop);
+    container.appendChild(garlandBottom);
+    container.appendChild(garlandLeft);
+    container.appendChild(garlandRight);
+}
+
+// Добавляем функцию для создания эффекта размытия курсора
+function createCursorBlur() {
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor-blur';
+    document.body.appendChild(cursor);
+    
+    let cursorTimeout;
+    document.addEventListener('mousemove', (e) => {
+        if (currentHeartRate >= 200) {
+            cursor.style.left = e.pageX + 'px';
+            cursor.style.top = e.pageY + 'px';
+            cursor.style.display = 'block';
+            
+            clearTimeout(cursorTimeout);
+            cursorTimeout = setTimeout(() => {
+                cursor.style.display = 'none';
+            }, 100);
+        } else {
+            cursor.style.display = 'none';
+        }
+    });
+}
+
+function clearAllElements() {
+    // Удаляем все элементы
+    ['#video-grid-container', '#memes-container', '#ads-container', '.floating-modal', '.modal', 
+     '.garland-top', '.garland-bottom', '.garland-left', '.garland-right'].forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => el.remove());
+    });
+
+    // Очищаем все интервалы и таймауты
+    const highestId = window.setTimeout(() => {}, 0);
+    for (let i = highestId; i >= 0; i--) {
+        window.clearInterval(i);
+        window.clearTimeout(i);
+    }
+
+    // Стабилизируем фон
+    document.body.style.cssText = `
+        background: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+    `;
+
+    // Обновляем стили формы
+    const container = document.querySelector('.container');
+    if (container) {
+        container.style.cssText = `
+            background: #000000 !important;
+            border: 2px solid #ff0000 !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5) !important;
+            padding: 15px !important;
+            width: 300px !important;
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            max-height: 80vh !important;
+            overflow-y: auto !important;
+        `;
+
+        // Добавляем заголовок
+        const title = document.createElement('h1');
+        title.style.cssText = `
+            color: #ff0000 !important;
+            font-family: "Times New Roman", serif !important;
+            font-size: 24px !important;
+            text-align: center !important;
+            margin: 0 0 15px 0 !important;
+            padding: 0 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            line-height: 1 !important;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
+        `;
+        title.textContent = 'Регистрация в аду';
+        container.insertBefore(title, container.firstChild);
+
+        // Обновляем стили для полей ввода
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.style.cssText = `
+                background: #000000 !important;
+                color: #ff0000 !important;
+                border: 1px solid #ff0000 !important;
+                padding: 8px !important;
+                margin-bottom: 8px !important;
+                font-family: "Times New Roman", serif !important;
+                font-size: 14px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                height: 32px !important;
+            `;
+        });
+
+        // Обновляем стили для лейблов
+        document.querySelectorAll('label').forEach(label => {
+            label.style.cssText = `
+                color: #ff0000 !important;
+                font-family: "Times New Roman", serif !important;
+                font-size: 12px !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1px !important;
+                margin-bottom: 4px !important;
+                display: block !important;
+            `;
+        });
+
+        // Обновляем стили для кнопок
+        document.querySelectorAll('button').forEach(button => {
+            button.style.cssText = `
+                background: #000000 !important;
+                color: #ff0000 !important;
+                border: 1px solid #ff0000 !important;
+                padding: 8px !important;
+                font-family: "Times New Roman", serif !important;
+                font-size: 14px !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1px !important;
+                cursor: pointer !important;
+                margin-top: 10px !important;
+                width: 100% !important;
+                height: 32px !important;
+            `;
+        });
+
+        // Обновляем стили для групп формы
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.style.cssText = `
+                margin-bottom: 10px !important;
+                width: 100% !important;
+            `;
+        });
+
+        // Стили для скроллбара
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            .container::-webkit-scrollbar {
+                width: 5px !important;
+            }
+            .container::-webkit-scrollbar-track {
+                background: #000000 !important;
+            }
+            .container::-webkit-scrollbar-thumb {
+                background: #ff0000 !important;
+                border-radius: 2px !important;
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    }
+
+    // Обновляем стили для placeholder
+    document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(input => {
+        input.style.cssText += `
+            &::placeholder {
+                color: rgba(255, 0, 0, 0.5) !important;
+            }
+        `;
+    });
 } 

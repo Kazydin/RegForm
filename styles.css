@@ -75,21 +75,28 @@ body {
 }
 
 .container {
-    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     max-width: 600px;
-    margin: 0 auto;
+    width: 90%;
     padding: 24px;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
     transition: var(--transition);
     z-index: 50;
+    margin: 0;
 }
 
 .registration-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: relative;
+    z-index: 2;
 }
 
 .form-group {
@@ -102,6 +109,7 @@ body {
     margin-bottom: 8px;
     color: rgba(0, 0, 0, 0.85);
     font-size: 14px;
+    animation: acidText 4s infinite;
 }
 
 .form-control {
@@ -114,6 +122,7 @@ body {
     border: 1px solid #d9d9d9;
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
+    animation: acidInput 3s infinite ease-in-out;
 }
 
 .form-control:hover {
@@ -121,8 +130,10 @@ body {
 }
 
 .form-control:focus {
+    animation: acidInput 1s infinite ease-in-out, acidGlow 2s infinite;
     outline: none;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    color: white;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .button {
@@ -893,18 +904,6 @@ select option {
     overflow: hidden;
 }
 
-.container {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 24px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: var(--transition);
-    z-index: 50;
-}
-
 .notification-container {
     position: fixed;
     top: 20px;
@@ -1299,7 +1298,6 @@ select option {
 /* Стили для танцующей формы */
 .form-dancing {
     transform-origin: center center;
-    transition: all 0.3s ease;
 }
 
 .form-dancing input,
@@ -1427,4 +1425,613 @@ select option {
     z-index: -1;
     filter: blur(10px);
     animation: acidBackground 3s infinite;
-} 
+}
+
+/* Кислотные анимации для полей формы */
+@keyframes acidInput {
+    0% { 
+        transform: rotate(0deg) scale(1);
+        background: rgba(255, 0, 255, 0.1);
+        border-color: #ff00ff;
+    }
+    25% { 
+        transform: rotate(-5deg) scale(1.05) skew(5deg);
+        background: rgba(0, 255, 255, 0.1);
+        border-color: #00ffff;
+    }
+    50% { 
+        transform: rotate(5deg) scale(0.95) skew(-5deg);
+        background: rgba(255, 255, 0, 0.1);
+        border-color: #ffff00;
+    }
+    75% { 
+        transform: rotate(-3deg) scale(1.02) skew(3deg);
+        background: rgba(0, 255, 0, 0.1);
+        border-color: #00ff00;
+    }
+    100% { 
+        transform: rotate(0deg) scale(1);
+        background: rgba(255, 0, 255, 0.1);
+        border-color: #ff00ff;
+    }
+}
+
+@keyframes acidGlow {
+    0% { box-shadow: 0 0 10px #ff00ff; }
+    25% { box-shadow: 0 0 15px #00ffff; }
+    50% { box-shadow: 0 0 20px #ffff00; }
+    75% { box-shadow: 0 0 15px #00ff00; }
+    100% { box-shadow: 0 0 10px #ff00ff; }
+}
+
+@keyframes acidText {
+    0% { color: #ff00ff; }
+    25% { color: #00ffff; }
+    50% { color: #ffff00; }
+    75% { color: #00ff00; }
+    100% { color: #ff00ff; }
+}
+
+/* Добавляем эффект искажения при вводе */
+.form-control:valid {
+    animation: acidInput 2s infinite ease-in-out;
+    transform-origin: center;
+}
+
+/* Случайные повороты и искажения при наведении */
+.form-control:hover {
+    animation: none;
+    transform: rotate(calc(var(--random-rotate) * 1deg)) skew(calc(var(--random-skew) * 1deg));
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Добавляем кислотную подложку для контейнера */
+.container::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(45deg, #ff00ff, #00ff00, #ff0000, #00ffff);
+    z-index: -1;
+    filter: blur(15px);
+    border-radius: 12px;
+    opacity: 0.7;
+    animation: acidBackground 3s infinite;
+}
+
+/* Создаем контейнер для гирлянды */
+.container::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    z-index: 1;
+}
+
+/* Создаем лампочки гирлянды */
+.garland-light {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    z-index: 2;
+}
+
+/* Анимации для лампочек гирлянды */
+@keyframes garlandBlink1 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ff0000, inset 0 0 8px #ff0000; background: #ff0000; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.3), inset 0 0 3px rgba(255, 0, 0, 0.3); background: rgba(255, 0, 0, 0.3); }
+}
+
+@keyframes garlandBlink2 {
+    0%, 100% { box-shadow: 0 0 15px 5px #00ff00, inset 0 0 8px #00ff00; background: #00ff00; }
+    50% { box-shadow: 0 0 5px 2px rgba(0, 255, 0, 0.3), inset 0 0 3px rgba(0, 255, 0, 0.3); background: rgba(0, 255, 0, 0.3); }
+}
+
+@keyframes garlandBlink3 {
+    0%, 100% { box-shadow: 0 0 15px 5px #0000ff, inset 0 0 8px #0000ff; background: #0000ff; }
+    50% { box-shadow: 0 0 5px 2px rgba(0, 0, 255, 0.3), inset 0 0 3px rgba(0, 0, 255, 0.3); background: rgba(0, 0, 255, 0.3); }
+}
+
+@keyframes garlandBlink4 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ffff00, inset 0 0 8px #ffff00; background: #ffff00; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 255, 0, 0.3), inset 0 0 3px rgba(255, 255, 0, 0.3); background: rgba(255, 255, 0, 0.3); }
+}
+
+@keyframes garlandBlink5 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ff00ff, inset 0 0 8px #ff00ff; background: #ff00ff; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 0, 255, 0.3), inset 0 0 3px rgba(255, 0, 255, 0.3); background: rgba(255, 0, 255, 0.3); }
+}
+
+/* Контейнеры для гирлянды */
+.garland-top, .garland-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 3px;
+    z-index: 2;
+}
+
+.garland-left, .garland-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3px;
+    z-index: 2;
+}
+
+.garland-top { top: -8px; }
+.garland-bottom { bottom: -8px; }
+.garland-left { left: -8px; }
+.garland-right { right: -8px; }
+
+/* Стили для лампочек */
+.garland-light {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+/* Анимации для лампочек гирлянды */
+@keyframes garlandBlink1 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ff0000, inset 0 0 8px #ff0000; background: #ff0000; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.3), inset 0 0 3px rgba(255, 0, 0, 0.3); background: rgba(255, 0, 0, 0.3); }
+}
+
+@keyframes garlandBlink2 {
+    0%, 100% { box-shadow: 0 0 15px 5px #00ff00, inset 0 0 8px #00ff00; background: #00ff00; }
+    50% { box-shadow: 0 0 5px 2px rgba(0, 255, 0, 0.3), inset 0 0 3px rgba(0, 255, 0, 0.3); background: rgba(0, 255, 0, 0.3); }
+}
+
+@keyframes garlandBlink3 {
+    0%, 100% { box-shadow: 0 0 15px 5px #0000ff, inset 0 0 8px #0000ff; background: #0000ff; }
+    50% { box-shadow: 0 0 5px 2px rgba(0, 0, 255, 0.3), inset 0 0 3px rgba(0, 0, 255, 0.3); background: rgba(0, 0, 255, 0.3); }
+}
+
+@keyframes garlandBlink4 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ffff00, inset 0 0 8px #ffff00; background: #ffff00; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 255, 0, 0.3), inset 0 0 3px rgba(255, 255, 0, 0.3); background: rgba(255, 255, 0, 0.3); }
+}
+
+@keyframes garlandBlink5 {
+    0%, 100% { box-shadow: 0 0 15px 5px #ff00ff, inset 0 0 8px #ff00ff; background: #ff00ff; }
+    50% { box-shadow: 0 0 5px 2px rgba(255, 0, 255, 0.3), inset 0 0 3px rgba(255, 0, 255, 0.3); background: rgba(255, 0, 255, 0.3); }
+}
+
+/* Анимация для каждой пятой лампочки с меньшей задержкой */
+.garland-light:nth-child(5n + 1) {
+    animation: garlandBlink1 1s infinite;
+    animation-delay: calc(0.05s * var(--light-index, 0));
+}
+
+.garland-light:nth-child(5n + 2) {
+    animation: garlandBlink2 1s infinite;
+    animation-delay: calc(0.05s * var(--light-index, 0));
+}
+
+.garland-light:nth-child(5n + 3) {
+    animation: garlandBlink3 1s infinite;
+    animation-delay: calc(0.05s * var(--light-index, 0));
+}
+
+.garland-light:nth-child(5n + 4) {
+    animation: garlandBlink4 1s infinite;
+    animation-delay: calc(0.05s * var(--light-index, 0));
+}
+
+.garland-light:nth-child(5n + 5) {
+    animation: garlandBlink5 1s infinite;
+    animation-delay: calc(0.05s * var(--light-index, 0));
+}
+
+/* Эффекты для формы в зависимости от BPM */
+@keyframes formDistortion {
+    0% { transform: perspective(500px) rotateX(0deg) rotateY(0deg) scale(1); }
+    25% { transform: perspective(500px) rotateX(15deg) rotateY(-10deg) scale(0.95); }
+    50% { transform: perspective(500px) rotateX(-10deg) rotateY(15deg) scale(1.05); }
+    75% { transform: perspective(500px) rotateX(5deg) rotateY(-5deg) scale(0.98); }
+    100% { transform: perspective(500px) rotateX(0deg) rotateY(0deg) scale(1); }
+}
+
+@keyframes formMelt {
+    0% { filter: blur(0) hue-rotate(0deg); transform: skew(0deg, 0deg); }
+    25% { filter: blur(2px) hue-rotate(90deg); transform: skew(5deg, 5deg); }
+    50% { filter: blur(4px) hue-rotate(180deg); transform: skew(-5deg, -5deg); }
+    75% { filter: blur(2px) hue-rotate(270deg); transform: skew(-3deg, 3deg); }
+    100% { filter: blur(0) hue-rotate(360deg); transform: skew(0deg, 0deg); }
+}
+
+@keyframes formChaos {
+    0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    25% { clip-path: polygon(5% 5%, 95% 0%, 100% 95%, 0% 90%); }
+    50% { clip-path: polygon(0% 15%, 100% 5%, 95% 85%, 5% 95%); }
+    75% { clip-path: polygon(10% 0%, 90% 10%, 100% 90%, 0% 100%); }
+    100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
+/* Стили для разных уровней BPM */
+.container[data-bpm-level="1"] {
+    animation: formDistortion 4s infinite;
+    filter: saturate(100%);
+}
+
+.container[data-bpm-level="2"] {
+    animation: formDistortion 3s infinite, formMelt 6s infinite;
+    transform-origin: center center;
+}
+
+.container[data-bpm-level="3"] {
+    animation: formDistortion 2s infinite, formMelt 4s infinite, formChaos 6s infinite;
+    transform-style: preserve-3d;
+}
+
+.container[data-bpm-level="4"] {
+    animation: formDistortion 1s infinite, formMelt 2s infinite, formChaos 3s infinite;
+    transform-style: preserve-3d;
+}
+
+.container[data-bpm-level="5"] {
+    animation: formDistortion 0.5s infinite, formMelt 1s infinite, formChaos 1.5s infinite;
+    transform-style: preserve-3d;
+}
+
+/* Кислотные эффекты для фона в зависимости от BPM */
+@keyframes bpmBackground1 {
+    0% { background: linear-gradient(45deg, #ff00ff 0%, #00ff00 100%); }
+    50% { background: linear-gradient(45deg, #00ff00 0%, #ff00ff 100%); }
+    100% { background: linear-gradient(45deg, #ff00ff 0%, #00ff00 100%); }
+}
+
+@keyframes bpmBackground2 {
+    0% { background: linear-gradient(45deg, #ff00ff 0%, #00ff00 33%, #0000ff 66%, #ff00ff 100%); }
+    33% { background: linear-gradient(45deg, #0000ff 0%, #ff00ff 33%, #00ff00 66%, #0000ff 100%); }
+    66% { background: linear-gradient(45deg, #00ff00 0%, #0000ff 33%, #ff00ff 66%, #00ff00 100%); }
+    100% { background: linear-gradient(45deg, #ff00ff 0%, #00ff00 33%, #0000ff 66%, #ff00ff 100%); }
+}
+
+@keyframes bpmBackground3 {
+    0% { background: linear-gradient(0deg, #ff0000, #00ff00, #0000ff, #ff00ff, #ffff00); }
+    25% { background: linear-gradient(90deg, #00ff00, #0000ff, #ff00ff, #ffff00, #ff0000); }
+    50% { background: linear-gradient(180deg, #0000ff, #ff00ff, #ffff00, #ff0000, #00ff00); }
+    75% { background: linear-gradient(270deg, #ff00ff, #ffff00, #ff0000, #00ff00, #0000ff); }
+    100% { background: linear-gradient(360deg, #ff0000, #00ff00, #0000ff, #ff00ff, #ffff00); }
+}
+
+/* Применяем эффекты в зависимости от уровня BPM */
+body[data-bpm-level="1"] {
+    animation: bpmBackground1 8s infinite;
+}
+
+body[data-bpm-level="2"] {
+    animation: bpmBackground2 6s infinite;
+}
+
+body[data-bpm-level="3"] {
+    animation: bpmBackground3 4s infinite;
+}
+
+body[data-bpm-level="4"] {
+    animation: bpmBackground3 2s infinite;
+}
+
+body[data-bpm-level="5"] {
+    animation: bpmBackground3 1s infinite;
+}
+
+/* Добавляем эффект пульсации для фона */
+@keyframes bpmPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+body[data-bpm-level] {
+    transition: all 0.3s ease;
+    transform-origin: center center;
+}
+
+body[data-bpm-level="3"] {
+    animation: bpmPulse 2s infinite;
+}
+
+body[data-bpm-level="4"] {
+    animation: bpmPulse 1s infinite;
+}
+
+body[data-bpm-level="5"] {
+    animation: bpmPulse 0.5s infinite;
+}
+
+/* Добавляем эффект искажения для фона */
+@keyframes bpmDistortion {
+    0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+    25% { clip-path: polygon(5% 5%, 95% 0%, 100% 95%, 0% 90%); }
+    50% { clip-path: polygon(0% 15%, 100% 5%, 95% 85%, 5% 95%); }
+    75% { clip-path: polygon(10% 0%, 90% 10%, 100% 90%, 0% 100%); }
+    100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
+body[data-bpm-level="4"],
+body[data-bpm-level="5"] {
+    animation: bpmDistortion 2s infinite;
+    backdrop-filter: blur(5px);
+}
+
+/* Стили для финальной формы (220+ BPM) */
+.container[data-bpm-level="final"] {
+    background: linear-gradient(rgba(20, 0, 0, 0.95), rgba(40, 0, 0, 0.95)) !important;
+    border: 4px solid #800000 !important;
+    box-shadow: 
+        0 0 30px rgba(255, 0, 0, 0.7),
+        0 0 60px rgba(255, 0, 0, 0.4),
+        inset 0 0 30px rgba(255, 0, 0, 0.5) !important;
+    transform: none !important;
+    animation: none !important;
+    position: relative;
+    overflow: visible;
+    transition: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    padding: 30px !important;
+}
+
+/* Убираем все анимации и эффекты для финальной формы */
+[data-bpm-level="final"] *:not(.demonic-phrase):not(.demonic-phrase *) {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+}
+
+/* Фон для финальной формы */
+body[data-bpm-level="final"] {
+    background: #000 !important;
+    background-image: 
+        radial-gradient(circle at center, rgba(40, 0, 0, 0.8) 0%, rgba(0, 0, 0, 1) 70%) !important;
+    animation: none !important;
+    transition: none !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Стили для полей ввода в финальной форме */
+.container[data-bpm-level="final"] .form-control {
+    background: #1a0000 !important;
+    color: #ff3333 !important;
+    border: 2px solid #800000 !important;
+    font-family: "Times New Roman", serif !important;
+    font-size: 16px !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2) !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    padding: 12px !important;
+    margin-bottom: 15px !important;
+}
+
+.container[data-bpm-level="final"] .form-control:focus {
+    background: #2a0000 !important;
+    border-color: #ff0000 !important;
+    box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.4),
+        inset 0 0 10px rgba(255, 0, 0, 0.2) !important;
+    color: #ff6666 !important;
+}
+
+.container[data-bpm-level="final"] .form-control::placeholder {
+    color: #800000 !important;
+    font-style: italic !important;
+}
+
+/* Стили для лейблов в финальной форме */
+.container[data-bpm-level="final"] label {
+    color: #ff0000 !important;
+    font-family: "Times New Roman", serif !important;
+    font-size: 18px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.4) !important;
+}
+
+/* Стили для кнопок в финальной форме */
+.container[data-bpm-level="final"] button {
+    background: linear-gradient(45deg, #600000, #800000) !important;
+    color: #fff !important;
+    border: 2px solid #ff0000 !important;
+    padding: 12px 24px !important;
+    font-family: "Times New Roman", serif !important;
+    font-size: 18px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    cursor: pointer !important;
+    margin-top: 20px !important;
+    width: 100% !important;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7) !important;
+    box-shadow: 
+        0 0 20px rgba(255, 0, 0, 0.4),
+        inset 0 0 10px rgba(255, 0, 0, 0.3) !important;
+}
+
+.container[data-bpm-level="final"] button:hover {
+    background: linear-gradient(45deg, #800000, #a00000) !important;
+    box-shadow: 
+        0 0 30px rgba(255, 0, 0, 0.6),
+        inset 0 0 15px rgba(255, 0, 0, 0.5) !important;
+}
+
+/* Скрываем все модалки и другие элементы в финальной форме */
+[data-bpm-level="final"] .floating-modal,
+[data-bpm-level="final"] .modal,
+[data-bpm-level="final"] #video-grid-container,
+[data-bpm-level="final"] #memes-container,
+[data-bpm-level="final"] #ads-container,
+[data-bpm-level="final"] .garland-top,
+[data-bpm-level="final"] .garland-bottom,
+[data-bpm-level="final"] .garland-left,
+[data-bpm-level="final"] .garland-right {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* ... existing code ... */
+
+/* Анимации для демонических фраз */
+@keyframes fadeIn {
+    from { 
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(0.8);
+        filter: blur(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translate(var(--x), var(--y)) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes fadeOut {
+    from { 
+        opacity: 1;
+        transform: translate(var(--x), var(--y)) scale(1);
+        filter: blur(0);
+    }
+    to { 
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(1.2);
+        filter: blur(10px);
+    }
+}
+
+/* Стили для демонических фраз */
+.demonic-phrase {
+    --x: 0px;
+    --y: 0px;
+    position: absolute;
+    color: #ff0000;
+    font-family: "Times New Roman", serif;
+    text-align: center;
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+    text-shadow: 
+        0 0 15px rgba(255, 0, 0, 0.8),
+        0 0 30px rgba(255, 0, 0, 0.5);
+}
+
+.demonic-phrase .latin {
+    font-size: 28px;
+    font-style: italic;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.demonic-phrase .russian {
+    font-size: 20px;
+    opacity: 0.9;
+    font-weight: bold;
+}
+
+/* Специальные стили для финальной формы */
+[data-bpm-level="final"] .demonic-phrase {
+    animation: none !important;
+}
+
+[data-bpm-level="final"] .demonic-phrase .latin,
+[data-bpm-level="final"] .demonic-phrase .russian {
+    color: #ff0000 !important;
+    text-shadow: 
+        0 0 15px rgba(255, 0, 0, 0.8),
+        0 0 30px rgba(255, 0, 0, 0.5),
+        0 0 45px rgba(255, 0, 0, 0.3) !important;
+}
+
+/* ... existing code ... */
+
+/* Стили для демонических фраз в финальной форме */
+.container[data-bpm-level="final"] .demonic-phrase {
+    position: absolute;
+    color: #ff0000 !important;
+    font-family: "Times New Roman", serif !important;
+    text-align: center !important;
+    z-index: 1000 !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;
+    text-shadow: 
+        0 0 15px rgba(255, 0, 0, 0.8),
+        0 0 30px rgba(255, 0, 0, 0.5),
+        0 0 45px rgba(255, 0, 0, 0.3) !important;
+}
+
+.container[data-bpm-level="final"] .demonic-phrase .latin {
+    font-size: 32px !important;
+    font-style: italic !important;
+    margin-bottom: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
+    font-weight: bold !important;
+}
+
+.container[data-bpm-level="final"] .demonic-phrase .russian {
+    font-size: 24px !important;
+    opacity: 0.9 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+}
+
+@keyframes fadeInDemonic {
+    from { 
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(0.8);
+        filter: blur(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translate(var(--x), var(--y)) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes fadeOutDemonic {
+    from { 
+        opacity: 1;
+        transform: translate(var(--x), var(--y)) scale(1);
+        filter: blur(0);
+    }
+    to { 
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(1.2);
+        filter: blur(10px);
+    }
+}
+
+.container[data-bpm-level="final"] .demonic-phrase {
+    animation: fadeInDemonic 0.5s forwards !important;
+}
+
+.container[data-bpm-level="final"] .demonic-phrase.fade-out {
+    animation: fadeOutDemonic 0.5s forwards !important;
+}
+
+/* ... existing code ... */ 
