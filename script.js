@@ -1285,7 +1285,7 @@ function updateHeartbeat() {
         container.setAttribute('data-bpm-level', 'final');
         document.body.setAttribute('data-bpm-level', 'final');
 
-        // Через 5 секунд показываем DEAD
+        // Через 2 секунды показываем DEAD
         setTimeout(() => {
             const cringemeter = document.querySelector('.cringemeter');
             if (cringemeter) {
@@ -1304,6 +1304,7 @@ function updateHeartbeat() {
                 `;
                 deadText.textContent = 'DEAD';
                 
+                // Добавляем анимацию пульсации
                 const style = document.createElement('style');
                 style.textContent = `
                     @keyframes pulseDead {
@@ -1316,7 +1317,7 @@ function updateHeartbeat() {
                 
                 cringemeter.appendChild(deadText);
             }
-        }, 5000);
+        }, 2000);
     } else if (currentHeartRate >= 200) {
         // Обычная логика для перехода
         const intensity = (currentHeartRate - 200) / 20;
@@ -1505,10 +1506,10 @@ function clearAllElements() {
             border: 2px solid #ff0000 !important;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5) !important;
             padding: 20px !important;
-            width: 400px !important;
+            width: 600px !important;
             position: fixed !important;
             top: 20% !important;
-            left: calc(50% - 220px) !important;
+            left: calc(50% - 320px) !important;
             margin: 0 !important;
             max-height: 70vh !important;
             overflow-y: auto !important;
@@ -1526,19 +1527,19 @@ function clearAllElements() {
 
         .demonic-form h1 {
             color: #ff0000 !important;
-            font-size: 42px !important;
+            font-size: 52px !important;
             text-align: center !important;
-            margin: 0 0 10px 0 !important;
+            margin: 0 0 15px 0 !important;
             padding: 0 !important;
             text-transform: uppercase !important;
-            letter-spacing: 2px !important;
+            letter-spacing: 3px !important;
             line-height: 1 !important;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;
         }
 
         .demonic-form label {
             color: #ff0000 !important;
-            font-size: 24px !important;
+            font-size: 28px !important;
             text-transform: uppercase !important;
             letter-spacing: 1px !important;
             margin-bottom: 2px !important;
@@ -1549,26 +1550,26 @@ function clearAllElements() {
             background: #000000 !important;
             color: #ff0000 !important;
             border: 1px solid #ff0000 !important;
-            padding: 8px !important;
+            padding: 12px !important;
             margin-bottom: 4px !important;
-            font-size: 20px !important;
+            font-size: 24px !important;
             width: 100% !important;
             box-sizing: border-box !important;
-            height: 40px !important;
+            height: 50px !important;
         }
 
         .demonic-form button {
             background: #000000 !important;
             color: #ff0000 !important;
             border: 1px solid #ff0000 !important;
-            padding: 8px !important;
-            font-size: 28px !important;
+            padding: 12px !important;
+            font-size: 32px !important;
             text-transform: uppercase !important;
-            letter-spacing: 1px !important;
+            letter-spacing: 2px !important;
             cursor: pointer !important;
-            margin-top: 10px !important;
+            margin-top: 15px !important;
             width: 100% !important;
-            height: 50px !important;
+            height: 60px !important;
         }
 
         .demonic-form .form-group {
@@ -1577,20 +1578,29 @@ function clearAllElements() {
 
         .demonic-form button:hover {
             background: #1a0000 !important;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7) !important;
+            transform: scale(1.02) !important;
+            transition: all 0.3s ease !important;
         }
 
         .demonic-form::-webkit-scrollbar {
-            width: 5px !important;
+            width: 8px !important;
         }
 
         .demonic-form::-webkit-scrollbar-track {
             background: #000000 !important;
+            border: 1px solid #ff0000 !important;
         }
 
         .demonic-form::-webkit-scrollbar-thumb {
             background: #ff0000 !important;
-            border-radius: 2px !important;
+            border-radius: 4px !important;
+            border: 2px solid #000000 !important;
+        }
+
+        .demonic-form::-webkit-scrollbar-thumb:hover {
+            background: #ff3333 !important;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
         }
     `;
     document.head.appendChild(styleSheet);
