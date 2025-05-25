@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😈 Регистрация в АДУ 😈</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <form id="registrationForm" class="registration-form">
+            <h1 class="blink-text">РЕГИСТРАЦИЯ</h1>
+            <marquee class="important-notice" behavior="alternate" scrollamount="20">⚠️ ВНИМАНИЕ! ВЫ ТОЧНО ХОТИТЕ ЗДЕСЬ ЗАРЕГИСТРИРОВАТЬСЯ? ⚠️</marquee>
+            
+            <div class="form-group">
+                <label for="username" class="rainbow-text">Имя пользователя:</label>
+                <input type="text" id="username" class="moving-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="rainbow-text">Номер телефона (в двоичном формате):</label>
+                <input type="text" id="phone" class="moving-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="rainbow-text">Пароль (минимум 20 символов, 5 эмодзи, 3 иероглифа):</label>
+                <input type="password" id="password" class="moving-input" required>
+                <div id="password-strength" class="password-strength"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword" class="rainbow-text">Подтверждение пароля:</label>
+                <input type="password" id="confirmPassword" class="moving-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="race" class="rainbow-text">Раса:</label>
+                <select id="race" class="moving-input" required>
+                    <option value="">Выберите расу</option>
+                    <option value="elf">Эльф (фу!)</option>
+                    <option value="orc">Орк (норм)</option>
+                    <option value="human">Человек (кринж)</option>
+                    <option value="goblin">Гоблин (база)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="birthdate" class="rainbow-text">Дата рождения (в формате звездной эры):</label>
+                <input type="text" id="birthdate" class="moving-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="rainbow-text">Подтвердите, что вы не робот:</label>
+                <div id="evil-captcha" class="evil-captcha">
+                    <canvas id="captchaCanvas"></canvas>
+                    <input type="text" id="captchaInput" placeholder="Введите капчу" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="rainbow-text">
+                    <input type="checkbox" id="terms" required>
+                    Я согласен отдать свою душу и первенца
+                </label>
+            </div>
+
+            <button type="submit" id="submitBtn" class="moving-button">Зарегистрироваться (если сможете)</button>
+        </form>
+    </div>
+
+    <div id="ads-container" class="ads-container"></div>
+    <div id="success-modal" class="modal">
+        <div class="modal-content">
+            <h2>Поздравляем!</h2>
+            <p>Вы каким-то образом смогли зарегистрироваться! Но зачем?</p>
+        </div>
+    </div>
+
+    <audio id="annoying-sound" loop>
+        <source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html> 

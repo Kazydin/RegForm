@@ -1,0 +1,192 @@
+@keyframes backgroundChange {
+    0% { background-color: #ff0000; }
+    20% { background-color: #00ff00; }
+    40% { background-color: #0000ff; }
+    60% { background-color: #ff00ff; }
+    80% { background-color: #ffff00; }
+    100% { background-color: #ff0000; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(5deg); }
+    75% { transform: translateX(5px) rotate(-5deg); }
+}
+
+@keyframes rainbow {
+    0% { color: red; }
+    20% { color: orange; }
+    40% { color: yellow; }
+    60% { color: green; }
+    80% { color: blue; }
+    100% { color: purple; }
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: "Comic Sans MS", cursive;
+    animation: backgroundChange 2s infinite;
+    cursor: crosshair;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 5px dashed #ff00ff;
+    position: relative;
+}
+
+.registration-form {
+    padding: 20px;
+    background: repeating-linear-gradient(45deg, #ff0, #ff0 10px, #f0f 10px, #f0f 20px);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    animation: shake 0.5s infinite;
+}
+
+.rainbow-text {
+    animation: rainbow 1s infinite;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.moving-input, .moving-button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 3px dotted #00ff00;
+    background: #000;
+    color: #fff;
+    font-family: "Wingdings", cursive;
+    font-size: 16px;
+}
+
+.moving-input:hover, .moving-button:hover {
+    transform: translate(
+        calc(50px * (random(10) - 5)),
+        calc(50px * (random(10) - 5))
+    );
+    transition: transform 0.2s;
+}
+
+.blink-text {
+    animation: blink 0.5s infinite;
+    color: #ff0000;
+    text-align: center;
+    font-size: 36px;
+    text-shadow: 5px 5px 0 #00ff00, -5px -5px 0 #0000ff;
+}
+
+.important-notice {
+    background: #ff0000;
+    color: #ffffff;
+    font-size: 24px;
+    padding: 10px;
+    margin: 20px 0;
+}
+
+.evil-captcha {
+    border: 2px solid #ff0000;
+    padding: 10px;
+    margin-top: 10px;
+    background: #000000;
+}
+
+#captchaCanvas {
+    width: 100%;
+    height: 100px;
+    background: #ffffff;
+    margin-bottom: 10px;
+}
+
+.password-strength {
+    height: 20px;
+    margin-top: 5px;
+    background: linear-gradient(to right, #ff0000, #00ff00);
+    animation: backgroundChange 1s infinite;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ff00ff;
+    padding: 20px;
+    border: 5px solid #00ff00;
+    animation: shake 0.2s infinite;
+}
+
+.ads-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.ad {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border: 3px solid #ff0000;
+    animation: shake 0.3s infinite;
+    z-index: 1000;
+    cursor: not-allowed;
+}
+
+/* Специальные эффекты для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        transform: rotate(180deg);
+    }
+    
+    .container {
+        transform: scale(0.8) skew(10deg);
+    }
+}
+
+/* Курсор будет постоянно меняться */
+* {
+    cursor: wait;
+}
+
+*:hover {
+    cursor: not-allowed;
+}
+
+/* Дополнительные эффекты для элементов формы */
+input:focus {
+    transform: rotate(180deg);
+    transition: transform 1s;
+}
+
+select option {
+    background: #000;
+    color: #ff0;
+    font-family: "Wingdings";
+} 
