@@ -244,7 +244,7 @@ const danceStyles = [
     }
 ];
 
-// Добавляем массив демонических фраз
+// Массив демонических фраз
 const demonicPhrases = [
     { ru: "Добро пожаловать в вечность", lat: "Bene venit ad aeternitatem" },
     { ru: "Твоя душа теперь принадлежит тьме", lat: "Anima tua nunc tenebris pertinet" },
@@ -257,7 +257,25 @@ const demonicPhrases = [
     { ru: "Царство теней ждёт", lat: "Regnum umbrarum expectat" },
     { ru: "Печать дьявола", lat: "Sigillum diaboli" },
     { ru: "Время искупления", lat: "Tempus redemptionis" },
-    { ru: "Вечная тьма", lat: "Tenebrae aeternae" }
+    { ru: "Вечная тьма", lat: "Tenebrae aeternae" },
+    { ru: "Ад приветствует тебя", lat: "Infernum te salutant" },
+    { ru: "Забудь о свете", lat: "Oblivisci lucis" },
+    { ru: "Страдания вечны", lat: "Dolores aeterni" },
+    { ru: "Тени поглотят твою душу", lat: "Umbrae animam tuam devorabunt" },
+    { ru: "Время остановилось", lat: "Tempus stetit" },
+    { ru: "Боль очищает", lat: "Dolor purificat" },
+    { ru: "Смерть - это дар", lat: "Mors donum est" },
+    { ru: "Ад ждал тебя", lat: "Infernum te expectabat" },
+    { ru: "Добро пожаловать домой", lat: "Bene venit domum" },
+    { ru: "Твой путь окончен", lat: "Via tua finita est" },
+    { ru: "Вечные муки ждут", lat: "Tormenta aeterna expectant" },
+    { ru: "Тьма - твой новый дом", lat: "Tenebrae - domus nova tua" },
+    { ru: "Отрекись от света", lat: "Abnega lucem" },
+    { ru: "Прими свою судьбу", lat: "Accipe fatum tuum" },
+    { ru: "Врата закрылись навечно", lat: "Portae clausae in aeternum" },
+    { ru: "Ад раскрыл свои объятия", lat: "Infernum amplexus suos aperuit" },
+    { ru: "Твоя душа принадлежит нам", lat: "Anima tua nobis pertinet" },
+    { ru: "Страх - твой вечный спутник", lat: "Terror - comes tuus aeternus" }
 ];
 
 // Функция для получения случайного неиспользованного мема
@@ -613,13 +631,9 @@ function generateCaptcha() {
 
 // Функция для проверки силы пароля
 function checkPasswordStrength(password) {
-    const hasEmoji = /[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(password);
     const hasChinese = /[\u4e00-\u9fa5]/.test(password);
     const hasLength = password.length >= 20;
     
-    if (!hasEmoji) {
-        return 'Добавьте хотя бы 5 эмодзи! 😡';
-    }
     if (!hasChinese) {
         return 'Нужно минимум 3 иероглифа! 漢字';
     }
@@ -1270,43 +1284,42 @@ function updateHeartbeat() {
         // Применяем финальный адский дизайн
         container.setAttribute('data-bpm-level', 'final');
         document.body.setAttribute('data-bpm-level', 'final');
-        
-        // Принудительно применяем стили для формы
-        container.style.cssText = `
-            background: linear-gradient(rgba(20, 0, 0, 0.95), rgba(40, 0, 0, 0.95)) !important;
-            border: 4px solid #ff0000 !important;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7),
-                       0 0 60px rgba(255, 0, 0, 0.4),
-                       inset 0 0 30px rgba(255, 0, 0, 0.5) !important;
-            transform: none !important;
-            animation: none !important;
-            transition: none !important;
-        `;
-        
-        // Применяем стили для фона
-        document.body.style.cssText = `
-            background: #000 !important;
-            animation: none !important;
-            transition: none !important;
-        `;
-        
-        // Стабилизируем форму и все поля ввода
-        document.querySelectorAll('.form-control').forEach(input => {
-            input.style.cssText = `
-                background: #1a0000 !important;
-                color: #ff3333 !important;
-                border: 2px solid #800000 !important;
-                transform: none !important;
-                animation: none !important;
-                transition: none !important;
-            `;
-        });
 
-        // Создаем новые демонические фразы
-        if (Math.random() > 0.7) {
-            createDemonicPhrase();
-        }
-        
+        // Через 5 секунд показываем DEAD
+        setTimeout(() => {
+            const cringemeter = document.querySelector('.cringemeter');
+            if (cringemeter) {
+                // Очищаем кринжометр
+                cringemeter.innerHTML = '';
+                
+                // Создаем надпись DEAD
+                const deadText = document.createElement('div');
+                deadText.style.cssText = `
+                    color: #ff0000 !important;
+                    font-family: 'MB Demonic Tale', cursive !important;
+                    font-size: 120px !important;
+                    font-weight: bold !important;
+                    text-align: center !important;
+                    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000 !important;
+                    animation: pulseDead 2s infinite !important;
+                    letter-spacing: 10px !important;
+                `;
+                deadText.textContent = 'DEAD';
+                
+                // Добавляем анимацию пульсации
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes pulseDead {
+                        0% { transform: scale(1); text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
+                        50% { transform: scale(1.1); text-shadow: 0 0 40px #ff0000, 0 0 80px #ff0000; }
+                        100% { transform: scale(1); text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                cringemeter.appendChild(deadText);
+            }
+        }, 5000);
     } else if (currentHeartRate >= 200) {
         // Обычная логика для перехода
         const intensity = (currentHeartRate - 200) / 20;
@@ -1336,74 +1349,57 @@ function updateHeartbeat() {
 
 // Функция создания демонической фразы
 function createDemonicPhrase() {
-    const phrases = [
-        { latin: "In tenebris veritas", russian: "Во тьме истина" },
-        { latin: "Sanguis vita est", russian: "Кровь есть жизнь" },
-        { latin: "Mortis porta", russian: "Врата смерти" },
-        { latin: "Daemon invictus", russian: "Непобедимый демон" },
-        { latin: "Nox aeterna", russian: "Вечная ночь" },
-        { latin: "Infernum expectat", russian: "Ад ждёт" },
-        { latin: "Anima perdita", russian: "Потерянная душа" },
-        { latin: "Tenebrae vincunt", russian: "Тьма побеждает" }
-    ];
-
-    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-    const container = document.querySelector('.container');
+    const phrase = demonicPhrases[Math.floor(Math.random() * demonicPhrases.length)];
     
-    if (!container) return;
-
-    // Удаляем старые фразы, если их больше 2
-    const existingPhrases = document.querySelectorAll('.demonic-phrase');
-    if (existingPhrases.length > 2) {
-        existingPhrases[0].remove();
-    }
-
     const phraseElement = document.createElement('div');
     phraseElement.className = 'demonic-phrase';
     
-    // Случайное позиционирование вокруг формы на большем расстоянии
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 250 + Math.random() * 150; // Увеличиваем расстояние
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
+    const x = Math.random() * (window.innerWidth - 400);
+    const y = Math.random() * (window.innerHeight - 100);
     
     phraseElement.style.cssText = `
         position: fixed !important;
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) !important;
+        left: ${x}px !important;
+        top: ${y}px !important;
         color: #ff0000 !important;
-        font-family: "Times New Roman", serif !important;
+        font-family: 'MB Demonic Tale', cursive !important;
         text-align: center !important;
-        z-index: 1000 !important;
+        z-index: -1 !important;
         pointer-events: none !important;
-        text-shadow: 0 0 15px rgba(255, 0, 0, 0.8),
-                    0 0 30px rgba(255, 0, 0, 0.5) !important;
-        white-space: nowrap !important;
+        opacity: 0 !important;
+        transition: opacity 0.5s ease-in-out !important;
+        max-width: 400px !important;
     `;
 
     phraseElement.innerHTML = `
         <div class="latin" style="
-            font-size: 24px !important;
-            font-style: italic !important;
+            font-family: 'MB Demonic Tale', cursive !important;
+            font-size: 32px !important;
             margin-bottom: 5px !important;
             text-transform: uppercase !important;
             letter-spacing: 2px !important;
-        ">${phrase.latin}</div>
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000 !important;
+        ">${phrase.lat}</div>
         <div class="russian" style="
-            font-size: 18px !important;
+            font-family: 'MB Demonic Tale', cursive !important;
+            font-size: 24px !important;
             opacity: 0.9 !important;
             letter-spacing: 1px !important;
-        ">${phrase.russian}</div>
+            text-shadow: 0 0 5px #ff0000, 0 0 15px #ff0000 !important;
+        ">${phrase.ru}</div>
     `;
 
-    document.body.appendChild(phraseElement); // Добавляем к body вместо container
+    document.body.appendChild(phraseElement);
 
-    // Удаляем фразу через случайное время
-    setTimeout(() => {
-        phraseElement.style.animation = 'fadeOut 0.5s forwards';
-        setTimeout(() => phraseElement.remove(), 500);
-    }, 2000 + Math.random() * 1000);
+    // Плавное появление
+    requestAnimationFrame(() => {
+        phraseElement.style.opacity = '1';
+    });
+
+    // Создаем новую фразу через случайное время
+    if (currentHeartRate >= 220) {
+        setTimeout(createDemonicPhrase, 1000 + Math.random() * 2000);
+    }
 }
 
 // Функция для создания гирлянды
@@ -1497,132 +1493,137 @@ function clearAllElements() {
         window.clearTimeout(i);
     }
 
-    // Стабилизируем фон
-    document.body.style.cssText = `
-        background: #000000 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        height: 100vh !important;
-        width: 100vw !important;
-        overflow: hidden !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-    `;
+    // Обновляем стили для демонической формы
+    styleSheet.textContent = `
+        @font-face {
+            font-family: 'MB Demonic Tale';
+            src: url('fonts/MB-Demonic_Tale.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-    // Обновляем стили формы
-    const container = document.querySelector('.container');
-    if (container) {
-        container.style.cssText = `
+        .demonic-form {
             background: #000000 !important;
             border: 2px solid #ff0000 !important;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5) !important;
-            padding: 15px !important;
-            width: 300px !important;
+            padding: 20px !important;
+            width: 400px !important;
             position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
+            top: 20% !important;
+            left: calc(50% - 220px) !important;
             margin: 0 !important;
-            max-height: 80vh !important;
+            max-height: 70vh !important;
             overflow-y: auto !important;
-        `;
+            z-index: 1000 !important;
+            transition: none !important;
+            animation: none !important;
+            box-sizing: border-box !important;
+            transform: none !important;
+            font-family: 'MB Demonic Tale', cursive !important;
+        }
 
-        // Добавляем заголовок
-        const title = document.createElement('h1');
-        title.style.cssText = `
+        .demonic-form * {
+            font-family: 'MB Demonic Tale', cursive !important;
+        }
+
+        .demonic-form h1 {
             color: #ff0000 !important;
-            font-family: "Times New Roman", serif !important;
-            font-size: 24px !important;
+            font-size: 42px !important;
             text-align: center !important;
-            margin: 0 0 15px 0 !important;
+            margin: 0 0 10px 0 !important;
             padding: 0 !important;
             text-transform: uppercase !important;
             letter-spacing: 2px !important;
             line-height: 1 !important;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
-        `;
+        }
+
+        .demonic-form label {
+            color: #ff0000 !important;
+            font-size: 24px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            margin-bottom: 2px !important;
+            display: block !important;
+        }
+
+        .demonic-form .form-control {
+            background: #000000 !important;
+            color: #ff0000 !important;
+            border: 1px solid #ff0000 !important;
+            padding: 8px !important;
+            margin-bottom: 4px !important;
+            font-size: 20px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            height: 40px !important;
+        }
+
+        .demonic-form button {
+            background: #000000 !important;
+            color: #ff0000 !important;
+            border: 1px solid #ff0000 !important;
+            padding: 8px !important;
+            font-size: 28px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            cursor: pointer !important;
+            margin-top: 10px !important;
+            width: 100% !important;
+            height: 50px !important;
+        }
+
+        .demonic-form .form-group {
+            margin-bottom: 8px !important;
+        }
+
+        .demonic-form button:hover {
+            background: #1a0000 !important;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;
+        }
+
+        .demonic-form::-webkit-scrollbar {
+            width: 5px !important;
+        }
+
+        .demonic-form::-webkit-scrollbar-track {
+            background: #000000 !important;
+        }
+
+        .demonic-form::-webkit-scrollbar-thumb {
+            background: #ff0000 !important;
+            border-radius: 2px !important;
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Обновляем форму
+    const container = document.querySelector('.container');
+    if (container) {
+        // Удаляем все существующие стили и классы
+        container.className = 'demonic-form';
+        
+        // Принудительно применяем стили ко всем элементам
+        const elements = container.querySelectorAll('*');
+        elements.forEach(element => {
+            element.style.setProperty('font-family', "'MB Demonic Tale', cursive", 'important');
+        });
+
+        // Обновляем заголовок
+        let title = container.querySelector('h1');
+        if (!title) {
+            title = document.createElement('h1');
+            container.insertBefore(title, container.firstChild);
+        }
         title.textContent = 'Регистрация в аду';
-        container.insertBefore(title, container.firstChild);
+        title.style.setProperty('font-family', "'MB Demonic Tale', cursive", 'important');
 
-        // Обновляем стили для полей ввода
-        document.querySelectorAll('.form-control').forEach(input => {
-            input.style.cssText = `
-                background: #000000 !important;
-                color: #ff0000 !important;
-                border: 1px solid #ff0000 !important;
-                padding: 8px !important;
-                margin-bottom: 8px !important;
-                font-family: "Times New Roman", serif !important;
-                font-size: 14px !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
-                height: 32px !important;
-            `;
+        // Обновляем placeholder'ы
+        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(input => {
+            input.style.setProperty('::placeholder', 'color: rgba(255, 0, 0, 0.5)', 'important');
         });
-
-        // Обновляем стили для лейблов
-        document.querySelectorAll('label').forEach(label => {
-            label.style.cssText = `
-                color: #ff0000 !important;
-                font-family: "Times New Roman", serif !important;
-                font-size: 12px !important;
-                text-transform: uppercase !important;
-                letter-spacing: 1px !important;
-                margin-bottom: 4px !important;
-                display: block !important;
-            `;
-        });
-
-        // Обновляем стили для кнопок
-        document.querySelectorAll('button').forEach(button => {
-            button.style.cssText = `
-                background: #000000 !important;
-                color: #ff0000 !important;
-                border: 1px solid #ff0000 !important;
-                padding: 8px !important;
-                font-family: "Times New Roman", serif !important;
-                font-size: 14px !important;
-                text-transform: uppercase !important;
-                letter-spacing: 1px !important;
-                cursor: pointer !important;
-                margin-top: 10px !important;
-                width: 100% !important;
-                height: 32px !important;
-            `;
-        });
-
-        // Обновляем стили для групп формы
-        document.querySelectorAll('.form-group').forEach(group => {
-            group.style.cssText = `
-                margin-bottom: 10px !important;
-                width: 100% !important;
-            `;
-        });
-
-        // Стили для скроллбара
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = `
-            .container::-webkit-scrollbar {
-                width: 5px !important;
-            }
-            .container::-webkit-scrollbar-track {
-                background: #000000 !important;
-            }
-            .container::-webkit-scrollbar-thumb {
-                background: #ff0000 !important;
-                border-radius: 2px !important;
-            }
-        `;
-        document.head.appendChild(styleSheet);
     }
-
-    // Обновляем стили для placeholder
-    document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(input => {
-        input.style.cssText += `
-            &::placeholder {
-                color: rgba(255, 0, 0, 0.5) !important;
-            }
-        `;
-    });
+    
+    // Запускаем создание демонических фраз
+    createDemonicPhrase();
 } 
