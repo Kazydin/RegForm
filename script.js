@@ -705,8 +705,30 @@ function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Функция для генерации капчи
+// Обновляем функцию для генерации капчи
 function generateCaptcha() {
+    // Создаем или находим контейнер для капчи
+    let captchaContainer = document.querySelector('.evil-captcha');
+    if (!captchaContainer) {
+        captchaContainer = document.createElement('div');
+        captchaContainer.className = 'evil-captcha';
+        const canvas = document.createElement('canvas');
+        canvas.id = 'captchaCanvas';
+        canvas.width = 300;
+        canvas.height = 150;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'captchaInput';
+        input.placeholder = '666';
+        captchaContainer.appendChild(canvas);
+        captchaContainer.appendChild(input);
+        
+        // Находим форму и вставляем контейнер перед кнопкой отправки
+        const form = document.querySelector('form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        form.insertBefore(captchaContainer, submitButton);
+    }
+
     const canvas = document.getElementById('captchaCanvas');
     const ctx = canvas.getContext('2d');
     
@@ -740,10 +762,10 @@ function generateCaptcha() {
         rebus = `${captchaEmoji.numbers[num1]} ${operation} ${captchaEmoji.numbers[num2]}`;
     } else {
         // Ребус на подсчет количества
-        const item = captchaEmoji.items[getRandomNumber(0, captchaEmoji.items.length - 1)];
+        const item = '👻'; // Используем один символ для подсчета
         const count = getRandomNumber(2, 5);
         answer = count;
-        rebus = item.repeat(count);
+        rebus = '👻'.repeat(count);
     }
     
     // Добавляем демонический фон
@@ -814,12 +836,8 @@ function generateCaptcha() {
 
 // Функция для проверки силы пароля
 function checkPasswordStrength(password) {
-    const hasChinese = /[\u4e00-\u9fa5]/.test(password);
     const hasLength = password.length >= 20;
     
-    if (!hasChinese) {
-        return 'Нужно минимум 3 иероглифа! 漢字';
-    }
     if (!hasLength) {
         return 'Слишком короткий пароль! Нужно минимум 20 символов!';
     }
@@ -1418,6 +1436,142 @@ document.addEventListener('DOMContentLoaded', () => {
             margin-bottom: 10px;
         `;
     }
+
+    updateStyles();
+    
+    // Правила валидации для каждого поля
+    const validationRules = {
+        'username': [
+            { type: 'required' },
+            { type: 'minLength', value: 6 },
+            { type: 'maxLength', value: 30 }
+        ],
+        'email': [
+            { type: 'required' },
+            { type: 'email' },
+            { type: 'minLength', value: 5 },
+            { type: 'maxLength', value: 50 }
+        ],
+        'phone': [
+            { type: 'required' },
+            { type: 'binary' },
+            { type: 'minLength', value: 8 }
+        ],
+        'password': [
+            { type: 'required' },
+            { type: 'minLength', value: 20 },
+            { type: 'maxLength', value: 100 }
+        ]
+    };
+    
+    // Обновляем плейсхолдеры
+    Object.keys(validationRules).forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+            // ... existing code ...
+            
+            // Обновляем placeholder с подсказкой
+            const placeholders = {
+                'username': 'Минимум 6 символов',
+                'email': 'example@hell.com',
+                'phone': '01001010',
+                'password': 'Минимум 20 символов'
+            };
+            input.placeholder = placeholders[fieldId];
+            
+            // ... rest of the existing code ...
+        }
+    });
+
+    const registrationForm = document.getElementById('registrationForm');
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Проверяем все поля перед отправкой
+            let isValid = true;
+            let errorMessages = [];
+            
+            Object.keys(validationRules).forEach(fieldId => {
+                const input = document.getElementById(fieldId);
+                if (input) {
+                    if (!validateField(input, validationRules[fieldId])) {
+                        isValid = false;
+                        input.classList.add('invalid');
+                        input.style.animation = 'wrongInput 0.5s ease';
+                        const fieldName = {
+                            'username': 'имени пользователя',
+                            'email': 'email',
+                            'phone': 'телефона',
+                            'password': 'пароля'
+                        }[fieldId];
+                        errorMessages.push(`Ошибка в поле ${fieldName}`);
+                    }
+                }
+            });
+            
+            // Проверяем капчу
+            const captchaInput = document.getElementById('captchaInput');
+            if (captchaInput && captchaInput.value !== currentCaptcha) {
+                isValid = false;
+                captchaInput.classList.add('invalid');
+                captchaInput.style.animation = 'wrongInput 0.5s ease';
+                errorMessages.push('Неверная капча!');
+            }
+            
+            if (!isValid) {
+                // Показываем каждую ошибку отдельным уведомлением
+                errorMessages.forEach((message, index) => {
+                    setTimeout(() => {
+                        showNotification('Ошибка!', message, 'error');
+                    }, index * 200);
+                });
+                return;
+            }
+            
+            // Если все в порядке, показываем сообщение об успехе
+            showNotification(
+                '😈 Регистрация успешна!',
+                'Добро пожаловать в ад! Приготовьтесь к вечности страданий!',
+                'success',
+                5000
+            );
+            
+            // Создаем демоническую модалку успеха
+            setTimeout(() => {
+                createFloatingModal(
+                    '👹 ПОЗДРАВЛЯЕМ!',
+                    `Ваша душа теперь принадлежит нам! 
+                    <br><br>
+                    Регистрация прошла успешно, и вы официально стали частью нашего демонического сообщества. 
+                    <br><br>
+                    Приготовьтесь к вечности мучений и страданий! 
+                    <br><br>
+                    С наилучшими пожеланиями, 
+                    Ваш личный демон 😈`
+                );
+            }, 500);
+            
+            // Очищаем форму через небольшую задержку
+            setTimeout(() => {
+                registrationForm.reset();
+                currentCaptcha = generateCaptcha();
+                
+                // Сбрасываем все стили валидации
+                Object.keys(validationRules).forEach(fieldId => {
+                    const input = document.getElementById(fieldId);
+                    if (input) {
+                        input.classList.remove('valid', 'invalid');
+                        input.style.animation = 'none';
+                        const hintContainer = input.parentElement.querySelector('.evil-hint');
+                        if (hintContainer) {
+                            hintContainer.style.opacity = '0';
+                        }
+                    }
+                });
+            }, 2000);
+        });
+    }
 });
 
 // Запрещаем правый клик
@@ -1819,6 +1973,61 @@ function clearAllElements() {
             background: #ff3333 !important;
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
         }
+
+        .demonic-form .evil-captcha {
+            background: rgba(0, 0, 0, 0.5) !important;
+            border: 2px solid #ff0000 !important;
+            border-radius: 8px !important;
+            padding: 15px !important;
+            margin: 10px 0 !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
+        }
+
+        .demonic-form .evil-captcha canvas {
+            display: block !important;
+            margin: 0 auto 15px !important;
+            cursor: pointer !important;
+            border: 2px solid #ff0000 !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2) !important;
+        }
+
+        .demonic-form .evil-captcha canvas:hover {
+            transform: scale(1.02) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4) !important;
+        }
+
+        .demonic-form #captchaInput {
+            background: #000000 !important;
+            color: #ff0000 !important;
+            border: 2px solid #ff0000 !important;
+            padding: 12px !important;
+            font-size: 24px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            height: 50px !important;
+            text-align: center !important;
+            letter-spacing: 3px !important;
+            font-family: 'DuskDemon', cursive !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            margin-top: 10px !important;
+            text-transform: uppercase !important;
+        }
+
+        .demonic-form #captchaInput::placeholder {
+            color: rgba(255, 0, 0, 0.5) !important;
+            font-family: 'DuskDemon', cursive !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+        }
+
+        .demonic-form #captchaInput:focus {
+            outline: none !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5) !important;
+            border-color: #ff3333 !important;
+            transform: scale(1.02) !important;
     `;
     document.head.appendChild(styleSheet);
 
@@ -1851,4 +2060,143 @@ function clearAllElements() {
     
     // Запускаем создание демонических фраз
     createDemonicPhrase();
+}
+
+// Добавляем функцию для валидации полей
+function validateField(input, rules) {
+    const value = input.value;
+    let errorMessage = '';
+    
+    // Получаем контейнер для подсказки
+    let hintContainer = input.parentElement.querySelector('.evil-hint');
+    if (!hintContainer) {
+        hintContainer = document.createElement('div');
+        hintContainer.className = 'evil-hint';
+        input.parentElement.appendChild(hintContainer);
+    }
+    
+    // Проверяем каждое правило
+    for (const rule of rules) {
+        switch (rule.type) {
+            case 'minLength':
+                if (value.length < rule.value) {
+                    errorMessage = `Минимум ${rule.value} символов! Сейчас: ${value.length}`;
+                }
+                break;
+            case 'maxLength':
+                if (value.length > rule.value) {
+                    errorMessage = `Максимум ${rule.value} символов! Сейчас: ${value.length}`;
+                }
+                break;
+            case 'binary':
+                if (!/^[01]+$/.test(value)) {
+                    errorMessage = 'Только двоичные цифры (0 и 1)!';
+                }
+                break;
+            case 'email':
+                if (!value.includes('@') || !value.includes('.')) {
+                    errorMessage = 'Нужен настоящий email... или нет?';
+                }
+                break;
+            case 'required':
+                if (!value.trim()) {
+                    errorMessage = 'Поле обязательно для заполнения!';
+                }
+                break;
+        }
+        if (errorMessage) break;
+    }
+    
+    // Обновляем стили и подсказку
+    if (errorMessage) {
+        input.style.borderColor = '#ff0000';
+        input.style.animation = 'wrongInput 0.5s ease';
+        hintContainer.textContent = errorMessage;
+        hintContainer.style.opacity = '1';
+        return false;
+    } else {
+        input.style.borderColor = '#00ff00';
+        input.style.animation = 'none';
+        hintContainer.style.opacity = '0';
+        return true;
+    }
+}
+
+// Обновляем стили для лучшей читаемости
+function updateStyles() {
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        .demonic-form input {
+            background: #000000 !important;
+            color: #ff0000 !important;
+            border: 2px solid #ff0000 !important;
+            padding: 12px !important;
+            font-size: 24px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            height: 50px !important;
+            text-align: left !important;
+            letter-spacing: 2px !important;
+            font-family: 'DuskDemon', cursive !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .demonic-form input::placeholder {
+            color: rgba(255, 0, 0, 0.5) !important;
+            font-family: 'DuskDemon', cursive !important;
+            text-transform: none !important;
+            letter-spacing: 1px !important;
+            font-size: 20px !important;
+        }
+
+        .evil-hint {
+            color: #ff0000 !important;
+            font-family: 'DuskDemon', cursive !important;
+            font-size: 18px !important;
+            margin-top: 5px !important;
+            text-align: left !important;
+            opacity: 0;
+            transition: opacity 0.3s ease !important;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
+            position: absolute !important;
+            left: 0 !important;
+            bottom: -25px !important;
+            width: 100% !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            padding: 5px !important;
+            border-radius: 4px !important;
+        }
+
+        .form-group {
+            position: relative !important;
+            margin-bottom: 30px !important;
+        }
+
+        @keyframes wrongInput {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .demonic-form input:focus {
+            outline: none !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5) !important;
+            background: #1a0000 !important;
+        }
+
+        .demonic-form input.valid {
+            border-color: #00ff00 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3) !important;
+            background: #001a00 !important;
+        }
+
+        .demonic-form input.invalid {
+            border-color: #ff0000 !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
+            background: #1a0000 !important;
+        }
+    `;
+    document.head.appendChild(styleSheet);
 } 
