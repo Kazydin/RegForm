@@ -741,32 +741,20 @@ function generateCaptcha() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Генерируем ребус
-    const type = Math.random() > 0.5 ? 'math' : 'count';
+    // Генерируем только математический ребус
+    const num1 = getRandomNumber(1, 5);
+    const num2 = getRandomNumber(1, 5);
+    const operation = captchaEmoji.operations[getRandomNumber(0, 2)];
     let answer;
-    let rebus;
     
-    if (type === 'math') {
-        // Математический ребус
-        const num1 = getRandomNumber(1, 5);
-        const num2 = getRandomNumber(1, 5);
-        const operation = captchaEmoji.operations[getRandomNumber(0, 2)];
-        
-        // Вычисляем ответ
-        switch(operation) {
-            case '➕': answer = num1 + num2; break;
-            case '➖': answer = num1 - num2; break;
-            case '✖️': answer = num1 * num2; break;
-        }
-        
-        rebus = `${captchaEmoji.numbers[num1]} ${operation} ${captchaEmoji.numbers[num2]}`;
-    } else {
-        // Ребус на подсчет количества
-        const item = '👻'; // Используем один символ для подсчета
-        const count = getRandomNumber(2, 5);
-        answer = count;
-        rebus = '👻'.repeat(count);
+    // Вычисляем ответ
+    switch(operation) {
+        case '➕': answer = num1 + num2; break;
+        case '➖': answer = num1 - num2; break;
+        case '✖️': answer = num1 * num2; break;
     }
+    
+    const rebus = `${captchaEmoji.numbers[num1]} ${operation} ${captchaEmoji.numbers[num2]}`;
     
     // Добавляем демонический фон
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -796,7 +784,7 @@ function generateCaptcha() {
     ctx.textBaseline = 'top';
     ctx.shadowColor = '#ff0000';
     ctx.shadowBlur = 10;
-    ctx.fillText(type === 'math' ? 'Решите пример' : 'Сколько символов?', canvas.width / 2, 10);
+    ctx.fillText('Решите пример', canvas.width / 2, 10);
     
     // Рисуем ребус большим шрифтом
     ctx.font = '50px Arial';
@@ -806,30 +794,15 @@ function generateCaptcha() {
     ctx.shadowColor = '#ff0000';
     ctx.shadowBlur = 15;
     
-    if (type === 'math') {
-        // Разбиваем ребус на части для лучшего размещения
-        const parts = rebus.split(' ');
-        const spacing = 80; // Расстояние между элементами
-        
-        // Рисуем каждую часть отдельно
-        parts.forEach((part, index) => {
-            const x = canvas.width/2 + (index - 1) * spacing;
-            ctx.fillText(part, x, canvas.height/2);
-        });
-    } else {
-        // Для подсчета символов размещаем их с отступами
-        const symbols = rebus.split('');
-        const spacing = 60; // Расстояние между символами
-        const totalWidth = (symbols.length - 1) * spacing;
-        const startX = (canvas.width - totalWidth) / 2;
-        
-        symbols.forEach((symbol, index) => {
-            ctx.fillText(symbol, startX + index * spacing, canvas.height/2);
-        });
-    }
+    // Разбиваем ребус на части для лучшего размещения
+    const parts = rebus.split(' ');
+    const spacing = 80; // Расстояние между элементами
     
-    // Добавляем эффект свечения вокруг canvas
-    canvas.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.5)';
+    // Рисуем каждую часть отдельно
+    parts.forEach((part, index) => {
+        const x = canvas.width/2 + (index - 1) * spacing;
+        ctx.fillText(part, x, canvas.height/2);
+    });
     
     return answer.toString();
 }
@@ -893,18 +866,14 @@ function showNotification(title, message, type = 'info', duration = 3000) {
 
 // Функция для создания плавающего мема
 function createFloatingMeme() {
-    console.log('Creating floating meme...'); // Отладка
-    
     const memesContainer = document.getElementById('memes-container');
     if (!memesContainer) {
-        console.error('Memes container not found!');
         return;
     }
 
     const meme = document.createElement('img');
     meme.className = 'floating-meme';
     const selectedMeme = getRandomUnusedMeme();
-    console.log('Selected meme:', selectedMeme); // Отладка
     meme.src = selectedMeme;
     
     // Увеличенный случайный размер (от 100 до 300 пикселей)
@@ -956,31 +925,24 @@ function createFloatingMeme() {
     
     // Обработка ошибок загрузки изображения
     meme.onerror = () => {
-        console.error('Failed to load meme image:', meme.src);
         meme.remove();
     };
     
     // Добавляем мем только после загрузки изображения
     meme.onload = () => {
-        console.log('Meme loaded successfully:', meme.src); // Отладка
         memesContainer.appendChild(meme);
         // Плавное появление
         requestAnimationFrame(() => {
-            meme.style.opacity = '0.9'; // Увеличили прозрачность
+            meme.style.opacity = '0.9';
         });
     };
     
     // Удаляем мем через случайное время и создаем новый
     const lifetime = 5000 + Math.random() * 10000; // от 5 до 15 секунд
     setTimeout(() => {
-        if (meme.parentNode === memesContainer) {
-            meme.style.opacity = '0';
-            setTimeout(() => {
-                meme.remove();
-                // Создаем новый мем
-                createFloatingMeme();
-            }, 1000);
-        }
+        meme.remove();
+        // Создаем новый мем
+        createFloatingMeme();
     }, lifetime);
 }
 
@@ -1000,8 +962,6 @@ function applyChaosEffects() {
     lastChaosUpdate = now;
     chaosLevel++;
     
-    console.log('Chaos level increased to:', chaosLevel);
-    
     // Увеличиваем пульс с каждым уровнем хаоса
     currentHeartRate = Math.min(maxHeartRate, baseHeartRate + (chaosLevel * 28));
     updateHeartbeat();
@@ -1015,8 +975,7 @@ function applyChaosEffects() {
     form.classList.remove('form-dancing');
     
     switch(chaosLevel) {
-        case 1: // Начальный уровень хаоса
-            console.log('Initializing chaos level 1');
+        case 1:
             // Фоновые эффекты
             body.style.animation = 'backgroundChange 5s infinite';
             container.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
@@ -1092,21 +1051,14 @@ function createVideoGrid() {
         video.playsInline = true;
         
         // Добавляем обработку ошибок загрузки
-        video.onerror = (e) => {
-            console.error('Ошибка загрузки видео:', e);
-            console.log('Путь к видео:', video.src);
-            console.log('Код ошибки:', video.error.code);
-            console.log('Сообщение об ошибке:', video.error.message);
-            
+        video.onerror = () => {
             // Если видео не загрузилось, пробуем загрузить другое
             const otherVideo = video.src.includes('vid1.mp4') ? 'vid2.mp4' : 'vid1.mp4';
-            console.log('Пробуем загрузить другое видео:', otherVideo);
             video.src = `img/${otherVideo}`;
         };
         
         // Добавляем логирование успешной загрузки
         video.onloadeddata = () => {
-            console.log('Видео успешно загружено:', video.src);
             // Случайное время начала для каждого плеера
             const randomTime = Math.random() * video.duration;
             video.currentTime = randomTime;
@@ -1141,7 +1093,9 @@ function createVideoGrid() {
                 if (video.src !== `img/${newVideo}`) {
                     video.src = `img/${newVideo}`;
                     video.load();
-                    video.play().catch(console.error);
+                    video.play().catch(() => {
+                        // Игнорируем ошибку воспроизведения
+                    });
                 }
             }
         }, 5000 + Math.random() * 5000); // Проверка каждые 5-10 секунд
@@ -1160,8 +1114,6 @@ document.head.appendChild(styleSheet);
 
 // Инициализация формы
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded');
-    
     const form = document.getElementById('registrationForm');
     const inputs = document.querySelectorAll('.moving-input');
     const submitBtn = document.getElementById('submitBtn');
@@ -1287,14 +1239,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Создаем контейнер для мемов, если его нет
     if (!document.getElementById('memes-container')) {
-        console.log('Creating memes container'); // Отладка
         const memesContainer = document.createElement('div');
         memesContainer.id = 'memes-container';
         document.body.insertBefore(memesContainer, document.body.firstChild);
     }
     
-    // Принудительно создаем несколько мемов для тестирования
-    console.log('Creating initial test memes'); // Отладка
+    // Создаем несколько начальных мемов
     for (let i = 0; i < 3; i++) {
         createFloatingMeme();
     }
@@ -1304,7 +1254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Принудительно запускаем первый уровень хаоса через 2 секунды
     setTimeout(() => {
-        console.log('Forcing chaos level 1'); // Отладка
         if (chaosLevel === 0) {
             applyChaosEffects();
         }
@@ -1716,6 +1665,11 @@ function updateHeartbeat() {
     }
 }
 
+// Добавляем глобальную переменную для отслеживания скорости
+let phraseSpawnInterval = 2000; // Начальный интервал - 2 секунды
+const minPhraseInterval = 100; // Минимальный интервал - 0.1 секунда
+const phraseSpeedIncrease = 100; // Уменьшаем интервал на 0.1 секунду каждый раз
+
 // Функция создания демонической фразы
 function createDemonicPhrase() {
     const phrase = demonicPhrases[Math.floor(Math.random() * demonicPhrases.length)];
@@ -1733,11 +1687,13 @@ function createDemonicPhrase() {
         color: #ff0000 !important;
         font-family: 'DuskDemon', cursive !important;
         text-align: center !important;
-        z-index: -1 !important;
+        z-index: 9000 !important;
         pointer-events: none !important;
         opacity: 0 !important;
         transition: opacity 0.5s ease-in-out !important;
         max-width: 400px !important;
+        transform: scale(0.1) !important;
+        transition: all 0.5s ease-in-out !important;
     `;
 
     phraseElement.innerHTML = `
@@ -1760,15 +1716,25 @@ function createDemonicPhrase() {
 
     document.body.appendChild(phraseElement);
 
-    // Плавное появление
+    // Плавное появление с увеличением
     requestAnimationFrame(() => {
         phraseElement.style.opacity = '1';
+        phraseElement.style.transform = 'scale(1)';
     });
 
-    // Создаем новую фразу через случайное время
-    if (currentHeartRate >= 220) {
-        setTimeout(createDemonicPhrase, 1000 + Math.random() * 2000);
-    }
+    // Удаляем фразу через случайное время
+    const lifetime = 2000 + Math.random() * 3000;
+    setTimeout(() => {
+        phraseElement.style.opacity = '0';
+        phraseElement.style.transform = 'scale(0.1)';
+        setTimeout(() => phraseElement.remove(), 500);
+    }, lifetime);
+
+    // Ускоряем появление следующей фразы
+    phraseSpawnInterval = Math.max(minPhraseInterval, phraseSpawnInterval - phraseSpeedIncrease);
+    
+    // Планируем следующую фразу
+    setTimeout(createDemonicPhrase, phraseSpawnInterval);
 }
 
 // Функция для создания гирлянды
@@ -1848,6 +1814,7 @@ function createCursorBlur() {
     });
 }
 
+// Обновляем функцию clearAllElements
 function clearAllElements() {
     // Удаляем все элементы
     ['#video-grid-container', '#memes-container', '#ads-container', '.floating-modal', '.modal', 
@@ -2058,6 +2025,9 @@ function clearAllElements() {
         });
     }
     
+    // Сбрасываем интервал появления фраз
+    phraseSpawnInterval = 2000;
+    
     // Запускаем создание демонических фраз
     createDemonicPhrase();
 }
@@ -2126,6 +2096,17 @@ function validateField(input, rules) {
 function updateStyles() {
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
+        .demonic-form {
+            position: relative !important;
+            z-index: 10000 !important; // Форма будет поверх всего
+        }
+
+        .demonic-phrase {
+            position: fixed !important;
+            z-index: 9000 !important; // Надписи под формой
+            pointer-events: none !important;
+        }
+
         .demonic-form input {
             background: #000000 !important;
             color: #ff0000 !important;
