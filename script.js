@@ -278,6 +278,42 @@ const demonicPhrases = [
     { ru: "Страх - твой вечный спутник", lat: "Terror - comes tuus aeternus" }
 ];
 
+// Массив эмодзи для ребусов
+const captchaEmoji = {
+    numbers: ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'],
+    operations: ['➕', '➖', '✖️'],
+    items: ['🍎', '👻', '💀', '🦇', '🕷️', '🎃', '⚰️', '🔮', '🕯️', '🗡️']
+};
+
+// Массив стебных фраз для кнопок закрытия
+const closeButtonPhrases = [
+    'Нет, я останусь 😈',
+    'Попробуй закрыть, хе-хе',
+    'Сопротивление бесполезно',
+    'Ой, а что это не работает?',
+    'Кнопочка сломалась ¯\\_(ツ)_/¯',
+    'Щас, только перезагружусь',
+    'Error 404: Close button not found',
+    'Я неуязвимая реклама!',
+    'Ты правда думал, что это сработает?',
+    'Меня так просто не закрыть',
+    'Я тут навечно ❤️',
+    'Кнопка устала, приходи завтра',
+    'Упс... Не получилось',
+    'Я только начал показываться',
+    'Ха-ха, наивный',
+    'Закрыть? Не в этой жизни',
+    'Я тебе не какой-то попап!',
+    'Кнопка на обеде 🍕',
+    'Просто смирись с этим',
+    'Resistance is futile',
+    'Ты меня не победишь',
+    'Я тут главный!',
+    'Даже не пытайся',
+    'Кнопка в отпуске 🏖️',
+    'Error: Task failed successfully'
+];
+
 // Функция для получения случайного неиспользованного мема
 function getRandomUnusedMeme() {
     // Если все мемы использованы, очищаем множество
@@ -363,12 +399,78 @@ function createRandomAd() {
     }
     
     const randomMessage = annoyingMessages[Math.floor(Math.random() * annoyingMessages.length)];
+    const randomClosePhrase = closeButtonPhrases[Math.floor(Math.random() * closeButtonPhrases.length)];
     
     ad.innerHTML = `
         <h3>${randomMessage.title}</h3>
         <p>${randomMessage.message}</p>
-        <button onclick="this.parentElement.remove()">Закрыть (но не закроется)</button>
+        <button onclick="this.parentElement.remove()">${randomClosePhrase}</button>
     `;
+    
+    // Добавляем случайные стили для кнопки
+    const button = ad.querySelector('button');
+    if (button) {
+        const randomHue = Math.random() * 360;
+        button.style.cssText = `
+            background: hsl(${randomHue}, 70%, 20%) !important;
+            color: hsl(${randomHue}, 100%, 70%) !important;
+            border: 2px solid hsl(${randomHue}, 100%, 50%) !important;
+            padding: 8px 15px !important;
+            border-radius: 5px !important;
+            cursor: pointer !important;
+            font-size: 14px !important;
+            font-family: 'DuskDemon', cursive !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            margin-top: 10px !important;
+            transition: all 0.3s ease !important;
+            text-shadow: 0 0 5px hsl(${randomHue}, 100%, 70%) !important;
+            box-shadow: 0 0 10px hsla(${randomHue}, 100%, 50%, 0.3) !important;
+        `;
+
+        // Добавляем эффект при наведении
+        button.addEventListener('mouseover', () => {
+            button.style.transform = 'scale(1.1) rotate(${Math.random() * 10 - 5}deg)';
+            button.style.boxShadow = `0 0 20px hsla(${randomHue}, 100%, 50%, 0.5)`;
+        });
+
+        button.addEventListener('mouseout', () => {
+            button.style.transform = 'scale(1) rotate(0deg)';
+            button.style.boxShadow = `0 0 10px hsla(${randomHue}, 100%, 50%, 0.3)`;
+        });
+
+        // Добавляем случайное поведение при клике
+        button.addEventListener('click', (e) => {
+            e.preventDefault(); // Предотвращаем закрытие
+            const actions = [
+                // Убегающая кнопка
+                () => {
+                    button.style.position = 'relative';
+                    button.style.left = Math.random() * 100 - 50 + 'px';
+                    button.style.top = Math.random() * 100 - 50 + 'px';
+                },
+                // Вращающаяся кнопка
+                () => {
+                    button.style.transform = `rotate(${Math.random() * 360}deg)`;
+                },
+                // Мигающая кнопка
+                () => {
+                    button.style.animation = 'blink 0.1s infinite';
+                },
+                // Изменение текста
+                () => {
+                    button.textContent = closeButtonPhrases[Math.floor(Math.random() * closeButtonPhrases.length)];
+                },
+                // Создание нового баннера
+                () => {
+                    createRandomAd();
+                }
+            ];
+            
+            // Выполняем случайное действие
+            actions[Math.floor(Math.random() * actions.length)]();
+        });
+    }
     
     // Добавляем анимацию появления
     ad.style.opacity = '0';
@@ -598,35 +700,116 @@ function showRandomModal() {
     }
 }
 
-// Функция для генерации случайной капчи
+// Функция для генерации случайного числа от min до max
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Функция для генерации капчи
 function generateCaptcha() {
     const canvas = document.getElementById('captchaCanvas');
     const ctx = canvas.getContext('2d');
-    const captchaText = Math.random().toString(36).substring(2, 8).toUpperCase();
     
+    // Увеличиваем размер canvas для больших иконок
+    canvas.width = 300;
+    canvas.height = 150;
+    
+    // Очищаем канвас
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Рисуем текст капчи с случайными искажениями
-    for (let i = 0; i < captchaText.length; i++) {
-        ctx.font = `${Math.random() * 20 + 20}px Comic Sans MS`;
-        ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        ctx.rotate(Math.random() * 0.5 - 0.25);
-        ctx.fillText(
-            captchaText[i],
-            30 + i * 30,
-            50 + Math.random() * 20
+    // Генерируем ребус
+    const type = Math.random() > 0.5 ? 'math' : 'count';
+    let answer;
+    let rebus;
+    
+    if (type === 'math') {
+        // Математический ребус
+        const num1 = getRandomNumber(1, 5);
+        const num2 = getRandomNumber(1, 5);
+        const operation = captchaEmoji.operations[getRandomNumber(0, 2)];
+        
+        // Вычисляем ответ
+        switch(operation) {
+            case '➕': answer = num1 + num2; break;
+            case '➖': answer = num1 - num2; break;
+            case '✖️': answer = num1 * num2; break;
+        }
+        
+        rebus = `${captchaEmoji.numbers[num1]} ${operation} ${captchaEmoji.numbers[num2]}`;
+    } else {
+        // Ребус на подсчет количества
+        const item = captchaEmoji.items[getRandomNumber(0, captchaEmoji.items.length - 1)];
+        const count = getRandomNumber(2, 5);
+        answer = count;
+        rebus = item.repeat(count);
+    }
+    
+    // Добавляем демонический фон
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#1a0000');
+    gradient.addColorStop(1, '#000000');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Добавляем случайные красные точки
+    for (let i = 0; i < 50; i++) {
+        ctx.fillStyle = `rgba(255, 0, 0, ${Math.random() * 0.3})`;
+        ctx.beginPath();
+        ctx.arc(
+            Math.random() * canvas.width,
+            Math.random() * canvas.height,
+            Math.random() * 2,
+            0,
+            Math.PI * 2
         );
+        ctx.fill();
     }
     
-    // Добавляем шум
-    for (let i = 0; i < 100; i++) {
-        ctx.fillStyle = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`;
-        ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+    // Добавляем подсказку
+    ctx.font = '24px DuskDemon';
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.shadowColor = '#ff0000';
+    ctx.shadowBlur = 10;
+    ctx.fillText(type === 'math' ? 'Решите пример' : 'Сколько символов?', canvas.width / 2, 10);
+    
+    // Рисуем ребус большим шрифтом
+    ctx.font = '50px Arial';
+    ctx.fillStyle = '#ff0000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = '#ff0000';
+    ctx.shadowBlur = 15;
+    
+    if (type === 'math') {
+        // Разбиваем ребус на части для лучшего размещения
+        const parts = rebus.split(' ');
+        const spacing = 80; // Расстояние между элементами
+        
+        // Рисуем каждую часть отдельно
+        parts.forEach((part, index) => {
+            const x = canvas.width/2 + (index - 1) * spacing;
+            ctx.fillText(part, x, canvas.height/2);
+        });
+    } else {
+        // Для подсчета символов размещаем их с отступами
+        const symbols = rebus.split('');
+        const spacing = 60; // Расстояние между символами
+        const totalWidth = (symbols.length - 1) * spacing;
+        const startX = (canvas.width - totalWidth) / 2;
+        
+        symbols.forEach((symbol, index) => {
+            ctx.fillText(symbol, startX + index * spacing, canvas.height/2);
+        });
     }
     
-    return captchaText;
+    // Добавляем эффект свечения вокруг canvas
+    canvas.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.5)';
+    
+    return answer.toString();
 }
 
 // Функция для проверки силы пароля
@@ -1117,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const captchaInput = document.getElementById('captchaInput');
         if (captchaInput.value !== currentCaptcha) {
             captchaAttempts++;
-            createFloatingModal('Ошибка!', 'Неверная капча! Попробуйте еще раз!');
+            showNotification('Ошибка!', 'Неверный ответ! Попробуйте еще раз!', 'error');
             currentCaptcha = generateCaptcha();
             captchaInput.value = '';
             return;
@@ -1146,10 +1329,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     });
     
-    // Генерируем новую капчу при каждом клике на canvas
-    document.getElementById('captchaCanvas').addEventListener('click', () => {
-        currentCaptcha = generateCaptcha();
-    });
+    // Обновляем placeholder для поля ввода капчи
+    const captchaInput = document.getElementById('captchaInput');
+    if (captchaInput) {
+        captchaInput.placeholder = 'Введите ответ цифрами';
+    }
 
     // Создаем сетку видео при загрузке страницы
     createVideoGrid();
@@ -1201,6 +1385,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Добавляем функцию для создания эффекта размытия курсора
     createCursorBlur();
+
+    // Добавляем обновление капчи при клике
+    const captchaCanvas = document.getElementById('captchaCanvas');
+    if (captchaCanvas) {
+        captchaCanvas.style.cursor = 'pointer';
+        captchaCanvas.title = 'Нажмите для новой капчи';
+        
+        captchaCanvas.addEventListener('click', () => {
+            // Добавляем эффект при клике
+            captchaCanvas.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                captchaCanvas.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Обновляем капчу
+            currentCaptcha = generateCaptcha();
+            const captchaInput = document.getElementById('captchaInput');
+            if (captchaInput) {
+                captchaInput.value = '';
+                captchaInput.focus();
+            }
+        });
+    }
+    
+    // Стилизуем canvas
+    if (captchaCanvas) {
+        captchaCanvas.style.cssText = `
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        `;
+    }
 });
 
 // Запрещаем правый клик
