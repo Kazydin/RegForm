@@ -5,6 +5,11 @@ let formSubmissions = 0;
 let lastMouseMove = Date.now();
 let lastModalTime = Date.now();
 
+// Добавляем глобальные переменные для кринжометра
+let currentHeartRate = 80;
+const maxHeartRate = 220;
+const baseHeartRate = 80;
+
 // Массив путей к мемам
 const memeImages = [
     'img/98783-meme-dank-free-download-image.png',
@@ -47,32 +52,346 @@ let chaosLevel = 0;
 let lastChaosUpdate = Date.now();
 const chaosInterval = 5000; // 5 секунд между уровнями хаоса
 
-// Функция для создания случайных рекламных баннеров с новыми сообщениями
+// Массив стилей для баннеров
+const adStyles = [
+    {
+        name: 'cyber',
+        style: {
+            background: 'linear-gradient(45deg, #000, #0f0)',
+            border: '2px solid #0f0',
+            color: '#0f0',
+            fontFamily: '"Courier New", monospace',
+            clipPath: 'polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%)'
+        }
+    },
+    {
+        name: 'neon',
+        style: {
+            background: '#000',
+            border: '3px solid #0ff',
+            boxShadow: '0 0 20px #0ff, inset 0 0 20px #0ff',
+            color: '#fff',
+            textShadow: '0 0 10px #0ff'
+        }
+    },
+    {
+        name: 'retro',
+        style: {
+            background: 'repeating-linear-gradient(45deg, #ff6b6b, #ff6b6b 10px, #ff8787 10px, #ff8787 20px)',
+            border: '8px double #4a90e2',
+            fontFamily: '"Comic Sans MS", cursive'
+        }
+    },
+    {
+        name: 'kawaii',
+        style: {
+            background: 'linear-gradient(45deg, #ffcce6, #ff99cc)',
+            border: '10px solid #fff',
+            borderRadius: '30px',
+            boxShadow: '0 0 20px rgba(255, 153, 204, 0.5)',
+            color: '#ff66b2'
+        }
+    },
+    {
+        name: 'glitch',
+        style: {
+            background: '#000',
+            border: '2px solid #f0f',
+            color: '#f0f',
+            textShadow: '2px 2px #0ff, -2px -2px #f00',
+            animation: 'glitch 0.3s infinite'
+        }
+    },
+    {
+        name: 'vaporwave',
+        style: {
+            background: 'linear-gradient(45deg, #ff6b6b, #4a90e2)',
+            border: '4px solid #ff00ff',
+            color: '#fff',
+            fontFamily: '"Times New Roman", serif',
+            textShadow: '2px 2px #ff00ff'
+        }
+    },
+    {
+        name: 'minimal',
+        style: {
+            background: 'rgba(255, 255, 255, 0.9)',
+            border: '1px solid #000',
+            color: '#000',
+            fontFamily: '"Helvetica Neue", sans-serif',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }
+    },
+    {
+        name: 'rainbow',
+        style: {
+            background: 'linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet)',
+            border: '5px solid gold',
+            color: '#fff',
+            textShadow: '1px 1px #000'
+        }
+    },
+    {
+        name: 'matrix',
+        style: {
+            background: '#000',
+            border: '2px solid #0f0',
+            color: '#0f0',
+            fontFamily: 'monospace',
+            textShadow: '0 0 5px #0f0'
+        }
+    },
+    {
+        name: 'horror',
+        style: {
+            background: '#000',
+            border: '3px solid #800000',
+            color: '#ff0000',
+            fontFamily: '"Creepster", cursive',
+            textShadow: '0 0 10px #ff0000',
+            boxShadow: '0 0 20px rgba(255, 0, 0, 0.5)'
+        }
+    }
+];
+
+// Массив стилей для модалок
+const modalStyles = [
+    {
+        className: 'retro',
+        animation: 'spinAndFloat 8s infinite',
+        size: { min: 300, max: 500 }
+    },
+    {
+        className: 'neon',
+        animation: 'glitch 0.3s infinite',
+        size: { min: 250, max: 400 }
+    },
+    {
+        className: 'minimal',
+        animation: 'wobble 4s infinite',
+        size: { min: 200, max: 350 }
+    },
+    {
+        className: 'cyber',
+        animation: 'zigzag 6s infinite',
+        size: { min: 350, max: 600 }
+    },
+    {
+        className: 'kawaii',
+        animation: 'bounceAround 5s infinite',
+        size: { min: 280, max: 450 }
+    }
+];
+
+// Множество для отслеживания использованных мемов
+let usedMemes = new Set();
+
+// Массив типов движения для мемов
+const memeAnimationTypes = [
+    'float', // Плавное движение
+    'diagonal', // По диагонали
+    'corners', // По углам
+    'zigzag', // Зигзагом
+    'spiral', // По спирали
+    'bounce', // С отскоками
+];
+
+// Массив анимаций для баннеров
+const adAnimations = [
+    { name: 'adCrazy1', duration: '8s' },
+    { name: 'adCrazy2', duration: '6s' },
+    { name: 'adBounce', duration: '4s' },
+    { name: 'adShake', duration: '3s' },
+    { name: 'adFlip', duration: '5s' },
+    { name: 'adDiagonal', duration: '10s' },
+    { name: 'adPulse', duration: '3s' },
+    { name: 'adZigZag', duration: '7s' },
+    { name: 'adSpiral', duration: '9s' },
+    { name: 'adChaos', duration: '8s' }
+];
+
+// Массив танцевальных стилей
+const danceStyles = [
+    {
+        name: 'dance',
+        formAnimation: 'formDance 4s infinite ease-in-out',
+        inputAnimation: 'inputDance 2s infinite ease-in-out',
+        duration: 4
+    },
+    {
+        name: 'salsa',
+        formAnimation: 'formSalsa 3s infinite ease-in-out',
+        inputAnimation: 'inputSalsa 1.5s infinite ease-in-out',
+        duration: 3
+    },
+    {
+        name: 'waltz',
+        formAnimation: 'formWaltz 6s infinite ease-in-out',
+        inputAnimation: 'inputWaltz 3s infinite ease-in-out',
+        duration: 6
+    },
+    {
+        name: 'tango',
+        formAnimation: 'formTango 4s infinite ease-in-out',
+        inputAnimation: 'inputTango 2s infinite ease-in-out',
+        duration: 4
+    },
+    {
+        name: 'breakdance',
+        formAnimation: 'formBreakdance 2s infinite ease-in-out',
+        inputAnimation: 'inputBreakdance 1s infinite ease-in-out',
+        duration: 2
+    }
+];
+
+// Функция для получения случайного неиспользованного мема
+function getRandomUnusedMeme() {
+    // Если все мемы использованы, очищаем множество
+    if (usedMemes.size >= memeImages.length) {
+        usedMemes.clear();
+    }
+    
+    // Выбираем случайный неиспользованный мем
+    let unusedMemes = memeImages.filter(meme => !usedMemes.has(meme));
+    let randomMeme = unusedMemes[Math.floor(Math.random() * unusedMemes.length)];
+    usedMemes.add(randomMeme);
+    
+    return randomMeme;
+}
+
+// Функция для создания случайных рекламных баннеров
 function createRandomAd() {
+    let adsContainer = document.getElementById('ads-container');
+    if (!adsContainer) {
+        adsContainer = document.createElement('div');
+        adsContainer.id = 'ads-container';
+        document.body.appendChild(adsContainer);
+    }
+
+    // Проверяем количество существующих баннеров
+    const currentAds = document.querySelectorAll('.ad');
+    if (currentAds.length >= 20) {
+        const oldestAd = currentAds[0];
+        oldestAd.style.opacity = '0';
+        oldestAd.style.transform = 'scale(0.5) rotate(10deg)';
+        setTimeout(() => oldestAd.remove(), 300);
+        return;
+    }
+
     const ad = document.createElement('div');
     ad.className = 'ad';
-    ad.style.top = Math.random() * window.innerHeight + 'px';
-    ad.style.left = Math.random() * window.innerWidth + 'px';
-    ad.style.backgroundColor = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`;
+    ad.dataset.created = Date.now();
+    
+    // Случайная позиция с учетом существующих баннеров
+    let attempts = 0;
+    let validPosition = false;
+    let topPos, leftPos;
+
+    while (!validPosition && attempts < 10) {
+        topPos = Math.random() * (window.innerHeight - 200);
+        leftPos = Math.random() * (window.innerWidth - 300);
+        
+        validPosition = true;
+        currentAds.forEach(existingAd => {
+            const rect = existingAd.getBoundingClientRect();
+            const distance = Math.sqrt(
+                Math.pow(topPos - rect.top, 2) + 
+                Math.pow(leftPos - rect.left, 2)
+            );
+            if (distance < 150) {
+                validPosition = false;
+            }
+        });
+        
+        attempts++;
+    }
+
+    ad.style.top = topPos + 'px';
+    ad.style.left = leftPos + 'px';
+    
+    // Применяем случайный стиль
+    const randomStyle = adStyles[Math.floor(Math.random() * adStyles.length)];
+    Object.assign(ad.style, randomStyle.style);
+    
+    // Выбираем случайную анимацию из нового массива
+    const randomAnimation = adAnimations[Math.floor(Math.random() * adAnimations.length)];
+    ad.style.animation = `${randomAnimation.name} ${randomAnimation.duration} infinite`;
+    
+    // Добавляем случайные трансформации
+    if (Math.random() > 0.5) {
+        ad.style.transform += ` rotateX(${Math.random() * 360}deg)`;
+    }
+    if (Math.random() > 0.5) {
+        ad.style.transform += ` rotateY(${Math.random() * 360}deg)`;
+    }
+    if (Math.random() > 0.7) {
+        ad.style.transform += ` skew(${Math.random() * 20 - 10}deg)`;
+    }
     
     const randomMessage = annoyingMessages[Math.floor(Math.random() * annoyingMessages.length)];
     
     ad.innerHTML = `
         <h3>${randomMessage.title}</h3>
         <p>${randomMessage.message}</p>
-        <button onclick="this.parentElement.style.zIndex++">Закрыть (но не закроется)</button>
+        <button onclick="this.parentElement.remove()">Закрыть (но не закроется)</button>
     `;
-    document.getElementById('ads-container').appendChild(ad);
+    
+    // Добавляем анимацию появления
+    ad.style.opacity = '0';
+    ad.style.transform = 'scale(0.5)';
+    adsContainer.appendChild(ad);
+    
+    // Плавное появление
+    requestAnimationFrame(() => {
+        ad.style.opacity = '1';
+        ad.style.transform = 'scale(1)';
+    });
+    
+    // Случайное время жизни от 1 до 5 секунд
+    const lifetime = 1000 + Math.random() * 4000;
+    
+    setTimeout(() => {
+        if (ad.parentNode === adsContainer) {
+            ad.style.opacity = '0';
+            ad.style.transform = 'scale(0.5) rotate(10deg)';
+            setTimeout(() => {
+                if (ad.parentNode === adsContainer) {
+                    ad.remove();
+                    if (document.querySelectorAll('.ad').length < 20) {
+                        createRandomAd();
+                    }
+                }
+            }, 300);
+        }
+    }, lifetime);
 }
 
-// Функция для создания плавающей модалки
+// Обновляем интервал создания баннеров (каждые 0.5 секунды)
+setInterval(() => {
+    const currentAds = document.querySelectorAll('.ad');
+    if (currentAds.length < 20) {
+        createRandomAd();
+    }
+}, 500);
+
+// Обновляем функцию создания модалки
 function createFloatingModal(title, message) {
     const modal = document.createElement('div');
-    modal.className = 'floating-modal';
+    
+    // Выбираем случайный стиль
+    const style = modalStyles[Math.floor(Math.random() * modalStyles.length)];
+    modal.className = `floating-modal ${style.className}`;
+    
+    // Случайный размер из диапазона для выбранного стиля
+    const width = style.size.min + Math.random() * (style.size.max - style.size.min);
+    modal.style.width = `${width}px`;
     
     // Случайная начальная позиция
-    modal.style.left = Math.random() * (window.innerWidth - 400) + 'px';
-    modal.style.top = Math.random() * (window.innerHeight - 300) + 'px';
+    modal.style.left = Math.random() * (window.innerWidth - width) + 'px';
+    modal.style.top = Math.random() * (window.innerHeight - width * 0.8) + 'px';
+    
+    // Добавляем анимацию
+    modal.style.animation = style.animation;
     
     // Заголовок и сообщение
     modal.innerHTML = `
@@ -80,42 +399,81 @@ function createFloatingModal(title, message) {
         <p>${message}</p>
     `;
     
-    // Создаем несколько кнопок закрытия в случайных местах
-    const buttonCount = Math.floor(Math.random() * 3) + 2; // 2-4 кнопки
-    const buttonStyles = ['btn-style-1', 'btn-style-2', 'btn-style-3', 'btn-style-4'];
+    // Создаем кнопки закрытия
+    const buttonCount = Math.floor(Math.random() * 4) + 2; // 2-5 кнопок
+    const buttonStyles = ['btn-style-1', 'btn-style-2', 'btn-style-3', 'btn-style-4', 
+                         'btn-style-5', 'btn-style-6', 'btn-style-7', 'btn-style-8'];
     
     for (let i = 0; i < buttonCount; i++) {
         const button = document.createElement('button');
         button.className = `modal-close-btn ${buttonStyles[Math.floor(Math.random() * buttonStyles.length)]}`;
-        button.textContent = ['×', '✖', '❌', '🚫'][Math.floor(Math.random() * 4)];
+        
+        // Разные символы для кнопок
+        const symbols = ['×', '✖', '❌', '🚫', '⛔', '🔴', '❎', '✕', '☒', '⊗'];
+        button.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         
         // Случайное положение кнопки
         button.style.left = Math.random() * 100 + '%';
         button.style.top = Math.random() * 100 + '%';
         
-        // Случайный размер
-        button.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
+        // Случайный размер и поворот
+        const scale = 0.8 + Math.random() * 0.8; // 0.8 - 1.6
+        const rotation = Math.random() * 360;
+        button.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
         
-        // При наведении кнопка убегает
+        // При наведении кнопка может:
         button.addEventListener('mouseover', (e) => {
-            if (Math.random() > 0.3) { // 70% шанс что кнопка убежит
-                const newLeft = Math.random() * 100;
-                const newTop = Math.random() * 100;
-                button.style.left = `${newLeft}%`;
-                button.style.top = `${newTop}%`;
-            }
+            const actions = [
+                // Убежать
+                () => {
+                    const newLeft = Math.random() * 100;
+                    const newTop = Math.random() * 100;
+                    button.style.left = `${newLeft}%`;
+                    button.style.top = `${newTop}%`;
+                },
+                // Повернуться
+                () => {
+                    button.style.transform = `scale(${scale}) rotate(${Math.random() * 360}deg)`;
+                },
+                // Изменить размер
+                () => {
+                    button.style.transform = `scale(${0.5 + Math.random() * 1.5})`;
+                },
+                // Начать мигать
+                () => {
+                    button.style.animation = 'blink 0.1s infinite';
+                }
+            ];
+            
+            // Выбираем случайное действие
+            actions[Math.floor(Math.random() * actions.length)]();
         });
         
         // Закрытие модалки при клике
         button.addEventListener('click', () => {
-            if (Math.random() > 0.5) { // 50% шанс что модалка закроется
-                modal.remove();
-            } else {
-                // Иначе модалка перемещается в случайное место
-                modal.style.left = Math.random() * (window.innerWidth - 400) + 'px';
-                modal.style.top = Math.random() * (window.innerHeight - 300) + 'px';
-                showNotification('Упс!', 'Не удалось закрыть окно, попробуйте еще раз!', 'error');
-            }
+            const actions = [
+                // Закрыть модалку
+                () => modal.remove(),
+                // Переместить модалку
+                () => {
+                    modal.style.left = Math.random() * (window.innerWidth - width) + 'px';
+                    modal.style.top = Math.random() * (window.innerHeight - width * 0.8) + 'px';
+                    showNotification('Упс!', 'Не удалось закрыть окно, попробуйте еще раз!', 'error');
+                },
+                // Изменить стиль модалки
+                () => {
+                    const newStyle = modalStyles[Math.floor(Math.random() * modalStyles.length)];
+                    modal.className = `floating-modal ${newStyle.className}`;
+                    modal.style.animation = newStyle.animation;
+                },
+                // Создать новую модалку
+                () => {
+                    createFloatingModal('😈', 'Попытка закрыть окно создала новое!');
+                }
+            ];
+            
+            // Выбираем случайное действие
+            actions[Math.floor(Math.random() * actions.length)]();
         });
         
         modal.appendChild(button);
@@ -132,14 +490,26 @@ function createFloatingModal(title, message) {
         isDragging = true;
         initialX = e.clientX - modal.offsetLeft;
         initialY = e.clientY - modal.offsetTop;
+        
+        // Случайный эффект при начале перетаскивания
+        if (Math.random() > 0.7) {
+            modal.style.transform = `rotate(${Math.random() * 360}deg)`;
+        }
     });
     
     document.addEventListener('mousemove', (e) => {
         if (isDragging) {
+            e.preventDefault();
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
+            
             modal.style.left = currentX + 'px';
             modal.style.top = currentY + 'px';
+            
+            // Случайные эффекты при перетаскивании
+            if (Math.random() > 0.95) {
+                modal.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
+            }
         }
     });
     
@@ -149,15 +519,36 @@ function createFloatingModal(title, message) {
     
     document.body.appendChild(modal);
     
-    // Добавляем случайное движение
+    // Добавляем случайное движение в режиме хаоса
     if (chaosLevel > 2) {
         setInterval(() => {
             if (!isDragging && Math.random() > 0.7) {
                 const currentLeft = parseInt(modal.style.left);
                 const currentTop = parseInt(modal.style.top);
                 
-                modal.style.left = (currentLeft + (Math.random() * 40 - 20)) + 'px';
-                modal.style.top = (currentTop + (Math.random() * 40 - 20)) + 'px';
+                // Более сложное движение
+                const moveTypes = [
+                    // Плавное движение
+                    () => {
+                        modal.style.left = (currentLeft + (Math.random() * 40 - 20)) + 'px';
+                        modal.style.top = (currentTop + (Math.random() * 40 - 20)) + 'px';
+                    },
+                    // Резкий прыжок
+                    () => {
+                        modal.style.left = (currentLeft + (Math.random() * 200 - 100)) + 'px';
+                        modal.style.top = (currentTop + (Math.random() * 200 - 100)) + 'px';
+                    },
+                    // Вращение
+                    () => {
+                        modal.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    },
+                    // Изменение размера
+                    () => {
+                        modal.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
+                    }
+                ];
+                
+                moveTypes[Math.floor(Math.random() * moveTypes.length)]();
             }
         }, 1000);
     }
@@ -223,9 +614,17 @@ function checkPasswordStrength(password) {
     return 'Пароль подходит (но это не точно)';
 }
 
-// Функция для создания уведомления
+// Функция для показа уведомлений
 function showNotification(title, message, type = 'info', duration = 3000) {
-    const container = document.getElementById('notification-container');
+    // Проверяем/создаем контейнер для уведомлений
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+    }
+
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     
@@ -238,9 +637,9 @@ function showNotification(title, message, type = 'info', duration = 3000) {
     container.appendChild(notification);
     
     // Добавляем класс show после небольшой задержки для анимации
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         notification.classList.add('show');
-    }, 10);
+    });
     
     // Если форма в режиме хаоса, добавляем случайные эффекты
     if (chaosLevel > 0) {
@@ -254,37 +653,113 @@ function showNotification(title, message, type = 'info', duration = 3000) {
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => {
-            notification.remove();
+            if (notification.parentNode === container) {
+                notification.remove();
+            }
         }, 300);
     }, duration);
 }
 
 // Функция для создания плавающего мема
 function createFloatingMeme() {
+    console.log('Creating floating meme...'); // Отладка
+    
+    const memesContainer = document.getElementById('memes-container');
+    if (!memesContainer) {
+        console.error('Memes container not found!');
+        return;
+    }
+
     const meme = document.createElement('img');
     meme.className = 'floating-meme';
-    meme.src = memeImages[Math.floor(Math.random() * memeImages.length)];
+    const selectedMeme = getRandomUnusedMeme();
+    console.log('Selected meme:', selectedMeme); // Отладка
+    meme.src = selectedMeme;
     
-    // Случайная позиция
-    meme.style.left = Math.random() * window.innerWidth + 'px';
-    meme.style.top = Math.random() * window.innerHeight + 'px';
-    
-    // Случайный размер
-    const size = 50 + Math.random() * 100;
+    // Увеличенный случайный размер (от 100 до 300 пикселей)
+    const size = 100 + Math.random() * 200;
     meme.style.width = size + 'px';
     
-    // Случайная скорость и направление
-    const duration = 5 + Math.random() * 10;
-    meme.style.animation = `float ${duration}s infinite ease-in-out`;
-    meme.style.animationDelay = `-${Math.random() * duration}s`;
+    // Случайное начальное положение
+    const startPosition = Math.random() > 0.5 ? 'corner' : 'random';
     
-    document.getElementById('memes-container').appendChild(meme);
+    if (startPosition === 'corner') {
+        // Начинаем из случайного угла
+        meme.style.left = Math.random() > 0.5 ? '0' : (window.innerWidth - size) + 'px';
+        meme.style.top = Math.random() > 0.5 ? '0' : (window.innerHeight - size) + 'px';
+    } else {
+        // Случайная позиция
+        meme.style.left = Math.random() * (window.innerWidth - size) + 'px';
+        meme.style.top = Math.random() * (window.innerHeight - size) + 'px';
+    }
     
-    // Плавное появление
+    // Выбираем случайный тип анимации
+    const animationType = memeAnimationTypes[Math.floor(Math.random() * memeAnimationTypes.length)];
+    
+    // Применяем выбранную анимацию
+    switch(animationType) {
+        case 'float':
+            meme.style.animation = `float ${5 + Math.random() * 10}s infinite ease-in-out`;
+            break;
+        case 'diagonal':
+            meme.style.animation = `diagonal ${8 + Math.random() * 12}s infinite linear`;
+            break;
+        case 'corners':
+            meme.style.animation = `corners ${10 + Math.random() * 15}s infinite ease-in-out`;
+            break;
+        case 'zigzag':
+            meme.style.animation = `zigzag ${7 + Math.random() * 10}s infinite ease-in-out`;
+            break;
+        case 'spiral':
+            meme.style.animation = `spiral ${12 + Math.random() * 18}s infinite linear`;
+            break;
+        case 'bounce':
+            meme.style.animation = `bounce ${6 + Math.random() * 8}s infinite ease-in-out`;
+            break;
+    }
+    
+    // Добавляем вращение с 50% вероятностью
+    if (Math.random() > 0.5) {
+        meme.style.animation += `, rotate ${3 + Math.random() * 7}s infinite linear`;
+    }
+    
+    // Обработка ошибок загрузки изображения
+    meme.onerror = () => {
+        console.error('Failed to load meme image:', meme.src);
+        meme.remove();
+    };
+    
+    // Добавляем мем только после загрузки изображения
+    meme.onload = () => {
+        console.log('Meme loaded successfully:', meme.src); // Отладка
+        memesContainer.appendChild(meme);
+        // Плавное появление
+        requestAnimationFrame(() => {
+            meme.style.opacity = '0.9'; // Увеличили прозрачность
+        });
+    };
+    
+    // Удаляем мем через случайное время и создаем новый
+    const lifetime = 5000 + Math.random() * 10000; // от 5 до 15 секунд
     setTimeout(() => {
-        meme.style.opacity = '0.7';
-    }, 100);
+        if (meme.parentNode === memesContainer) {
+            meme.style.opacity = '0';
+            setTimeout(() => {
+                meme.remove();
+                // Создаем новый мем
+                createFloatingMeme();
+            }, 1000);
+        }
+    }, lifetime);
 }
+
+// Обновляем интервал создания мемов (каждую секунду)
+setInterval(() => {
+    const currentMemes = document.querySelectorAll('.floating-meme');
+    if (currentMemes.length < 15) { // Увеличили максимальное количество мемов
+        createFloatingMeme();
+    }
+}, 1000);
 
 // Функция для применения эффектов хаоса
 function applyChaosEffects() {
@@ -294,69 +769,201 @@ function applyChaosEffects() {
     lastChaosUpdate = now;
     chaosLevel++;
     
+    console.log('Chaos level increased to:', chaosLevel);
+    
+    // Увеличиваем пульс с каждым уровнем хаоса
+    currentHeartRate = Math.min(maxHeartRate, baseHeartRate + (chaosLevel * 28));
+    updateHeartbeat();
+    
     const body = document.body;
     const container = document.querySelector('.container');
-    const form = document.getElementById('registrationForm');
-    const inputs = document.querySelectorAll('.form-control');
+    const form = document.querySelector('form');
+    const inputs = document.querySelectorAll('input, select, textarea');
     
-    // Показываем уведомление о новом уровне хаоса
-    const message = annoyingMessages[Math.floor(Math.random() * annoyingMessages.length)];
-    showNotification(message.title, message.message, 
-        ['info', 'warning', 'error', 'success'][Math.floor(Math.random() * 4)]);
+    // Добавляем класс для танцующей формы
+    form.classList.add('form-dancing');
     
     switch(chaosLevel) {
-        case 1:
-            body.style.backgroundColor = '#000';
-            container.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-            body.classList.add('chaos-mode');
-            setInterval(() => {
-                if (Math.random() > 0.7) {
-                    const message = annoyingMessages[Math.floor(Math.random() * annoyingMessages.length)];
-                    showNotification(message.title, message.message, 
-                        ['info', 'warning', 'error', 'success'][Math.floor(Math.random() * 4)]);
-                }
-            }, 3000);
-            setInterval(createFloatingMeme, 2000);
-            createFloatingMeme();
-            break;
+        case 1: // Начальный уровень хаоса
+            console.log('Initializing chaos level 1');
+            // Простой танец
+            const danceStyle = danceStyles[0];
+            form.style.animation = danceStyle.formAnimation;
+            inputs.forEach(input => {
+                input.style.animation = danceStyle.inputAnimation;
+            });
             
-        case 2:
-            body.style.animation = 'backgroundChange 2s infinite';
+            // Фоновые эффекты
+            body.style.animation = 'backgroundChange 5s infinite';
+            container.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
             container.style.backdropFilter = 'blur(5px)';
             break;
             
-        case 3:
+        case 2:
+            // Сальса
+            const salsaStyle = danceStyles[1];
+            form.style.animation = salsaStyle.formAnimation;
             inputs.forEach(input => {
-                input.style.animation = 'shake 0.5s infinite';
+                input.style.animation = salsaStyle.inputAnimation;
             });
-            break;
             
-        case 4:
+            // Случайное изменение цветов полей в такт
             setInterval(() => {
                 inputs.forEach(input => {
                     if (Math.random() > 0.7) {
                         input.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 90%)`;
                     }
                 });
-            }, 1000);
+            }, salsaStyle.duration * 1000 / 4);
+            break;
+            
+        case 3:
+            // Вальс
+            const waltzStyle = danceStyles[2];
+            form.style.animation = waltzStyle.formAnimation;
+            inputs.forEach(input => {
+                input.style.animation = waltzStyle.inputAnimation;
+            });
+            
+            // Добавляем элегантное вращение контейнера
+            container.style.animation = `float ${waltzStyle.duration}s infinite ease-in-out`;
+            break;
+            
+        case 4:
+            // Танго
+            const tangoStyle = danceStyles[3];
+            form.style.animation = tangoStyle.formAnimation;
+            inputs.forEach(input => {
+                input.style.animation = tangoStyle.inputAnimation;
+            });
+            
+            // Добавляем страстные эффекты
+            setInterval(() => {
+                const hue = Math.random() * 60 + 300; // оттенки красного
+                container.style.backgroundColor = `hsla(${hue}, 70%, 50%, 0.1)`;
+            }, tangoStyle.duration * 1000 / 8);
             break;
             
         case 5:
+            // Брейк-данс
+            const breakdanceStyle = danceStyles[4];
+            form.style.animation = breakdanceStyle.formAnimation;
             inputs.forEach(input => {
-                input.addEventListener('mouseover', (e) => {
-                    if (Math.random() > 0.5) {
-                        const x = Math.random() * 50 - 25;
-                        const y = Math.random() * 50 - 25;
-                        e.target.style.transform = `translate(${x}px, ${y}px)`;
-                    }
-                });
+                input.style.animation = breakdanceStyle.inputAnimation;
             });
+            
+            // Добавляем экстремальные эффекты
+            setInterval(() => {
+                const effects = [
+                    `rotate(${Math.random() * 10 - 5}deg)`,
+                    `scale(${0.95 + Math.random() * 0.1})`,
+                    `skew(${Math.random() * 4 - 2}deg)`
+                ];
+                form.style.transform += effects.join(' ');
+            }, breakdanceStyle.duration * 1000 / 16);
             break;
     }
 }
 
+// Функция для создания сетки видеоплееров
+function createVideoGrid() {
+    // Создаем контейнер для видео, если его нет
+    let videoContainer = document.getElementById('video-grid-container');
+    if (!videoContainer) {
+        videoContainer = document.createElement('div');
+        videoContainer.id = 'video-grid-container';
+        document.body.insertBefore(videoContainer, document.body.firstChild);
+    }
+    
+    // Массив доступных видео
+    const videos = ['vid1.mp4', 'vid2.mp4', 'vid3.mp4', 'vid4.mp4'];
+    
+    // Создаем 9 видеоплееров (сетка 3x3)
+    for (let i = 0; i < 9; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper';
+        
+        // Создаем video элемент
+        const video = document.createElement('video');
+        // Случайно выбираем видео
+        const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+        video.src = `img/${randomVideo}`;
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        
+        // Добавляем обработку ошибок загрузки
+        video.onerror = (e) => {
+            console.error('Ошибка загрузки видео:', e);
+            console.log('Путь к видео:', video.src);
+            console.log('Код ошибки:', video.error.code);
+            console.log('Сообщение об ошибке:', video.error.message);
+            
+            // Если видео не загрузилось, пробуем загрузить другое
+            const otherVideo = video.src.includes('vid1.mp4') ? 'vid2.mp4' : 'vid1.mp4';
+            console.log('Пробуем загрузить другое видео:', otherVideo);
+            video.src = `img/${otherVideo}`;
+        };
+        
+        // Добавляем логирование успешной загрузки
+        video.onloadeddata = () => {
+            console.log('Видео успешно загружено:', video.src);
+            // Случайное время начала для каждого плеера
+            const randomTime = Math.random() * video.duration;
+            video.currentTime = randomTime;
+        };
+        
+        wrapper.appendChild(video);
+        videoContainer.appendChild(wrapper);
+        
+        // Добавляем случайные эффекты для каждого плеера
+        const effects = [
+            'blur(2px) brightness(1.2)',
+            'sepia(0.5) hue-rotate(90deg)',
+            'contrast(1.2) saturate(1.5)',
+            'grayscale(0.7) brightness(1.3)',
+            'invert(0.1) hue-rotate(-30deg)',
+            'opacity(0.8) contrast(1.4)',
+            'brightness(1.1) saturate(1.2)',
+            'sepia(0.3) contrast(1.1)',
+            'hue-rotate(45deg) brightness(1.2)'
+        ];
+        
+        wrapper.style.filter = effects[i];
+        
+        // Добавляем случайную анимацию масштабирования
+        const scaleAnimation = `videoScale ${5 + Math.random() * 5}s infinite alternate ease-in-out`;
+        wrapper.style.animation = scaleAnimation;
+        
+        // Добавляем периодическую смену видео
+        setInterval(() => {
+            if (Math.random() > 0.7) { // 30% шанс смены видео
+                const newVideo = videos[Math.floor(Math.random() * videos.length)];
+                if (video.src !== `img/${newVideo}`) {
+                    video.src = `img/${newVideo}`;
+                    video.load();
+                    video.play().catch(console.error);
+                }
+            }
+        }, 5000 + Math.random() * 5000); // Проверка каждые 5-10 секунд
+    }
+}
+
+// Добавляем анимацию масштабирования в стили
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes videoScale {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.1); }
+    }
+`;
+document.head.appendChild(styleSheet);
+
 // Инициализация формы
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded');
+    
     const form = document.getElementById('registrationForm');
     const inputs = document.querySelectorAll('.moving-input');
     const submitBtn = document.getElementById('submitBtn');
@@ -368,47 +975,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Показываем случайные модалки
     setInterval(showRandomModal, 5000);
     
-    // Более агрессивное изменение размеров полей
-    setInterval(() => {
-        inputs.forEach(input => {
-            if (Math.random() > 0.5) {
-                const width = 50 + Math.random() * 100;
-                const height = 20 + Math.random() * 60;
-                const marginLeft = Math.random() * 20 - 10;
-                input.style.width = `${width}%`;
-                input.style.height = `${height}px`;
-                input.style.marginLeft = `${marginLeft}%`;
-                input.style.transform += ` skew(${Math.random() * 20 - 10}deg)`;
-            }
-        });
-    }, 200);
-
-    // Менее частое изменение цвета фона
-    setInterval(() => {
-        // Изменяем только цвета полей ввода, не трогая фон
-        inputs.forEach(input => {
-            input.style.backgroundColor = `rgb(
-                ${Math.random() * 255},
-                ${Math.random() * 255},
-                ${Math.random() * 255}
-            )`;
-            input.style.color = `rgb(
-                ${Math.random() * 255},
-                ${Math.random() * 255},
-                ${Math.random() * 255}
-            )`;
-            input.style.borderWidth = `${1 + Math.random() * 5}px`;
-            input.style.borderStyle = Math.random() > 0.5 ? 'dotted' : 'dashed';
-        });
-    }, 100);
-
-    // Плавное изменение цвета фона (реже)
-    let hue = 0;
-    setInterval(() => {
-        hue = (hue + 1) % 360;
-        document.body.style.backgroundColor = `hsl(${hue}, 70%, 60%)`;
-    }, 1000); // Изменение каждую секунду
+    // Добавляем кислотный фон для body
+    document.body.style.animation = 'acidBodyBackground 10s infinite';
     
+    // Массив анимаций для полей
+    const inputAnimations = [
+        'inputDance1 3s infinite',
+        'inputDance2 4s infinite',
+        'inputDance3 3.5s infinite',
+        'inputDance4 4.5s infinite',
+        'inputDance5 5s infinite'
+    ];
+    
+    // Назначаем разные анимации для каждого поля
+    inputs.forEach((input, index) => {
+        input.classList.add('acid-input');
+        
+        // Добавляем задержку для каждого поля
+        const delay = index * 0.5; // 0.5 секунды между началом анимации каждого поля
+        input.style.animation = `${inputAnimations[index % inputAnimations.length]} ${delay}s`;
+        
+        // Добавляем пульсацию размеров с разной задержкой
+        input.style.animation += `, widthPulse ${4 + index}s infinite ${delay}s`;
+        input.style.animation += `, heightPulse ${3 + index}s infinite ${delay + 0.5}s`;
+        
+        // Добавляем кислотные эффекты с разной задержкой
+        input.style.animation += `, acidBackground ${3 + index * 0.5}s infinite ${delay + 1}s`;
+        
+        // Случайные изменения для каждого поля
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const effects = [
+                    () => {
+                        input.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+                    },
+                    () => {
+                        input.style.width = `${80 + Math.random() * 100}%`;
+                    },
+                    () => {
+                        input.style.height = `${30 + Math.random() * 40}px`;
+                    },
+                    () => {
+                        input.style.filter = `hue-rotate(${Math.random() * 360}deg) brightness(${1 + Math.random()})`;
+                    }
+                ];
+                
+                effects[Math.floor(Math.random() * effects.length)]();
+            }
+        }, 1000 + index * 200); // Разное время для каждого поля
+    });
+
     // Отключаем звук (закомментировано)
     // const audio = document.getElementById('annoying-sound');
     // audio.volume = 0.5;
@@ -471,10 +1087,32 @@ document.addEventListener('DOMContentLoaded', () => {
         strengthDiv.style.backgroundColor = message.includes('подходит') ? '#00ff00' : '#ff0000';
     });
     
-    // Проверяем уровень хаоса каждую секунду
+    // Создаем контейнер для мемов, если его нет
+    if (!document.getElementById('memes-container')) {
+        console.log('Creating memes container'); // Отладка
+        const memesContainer = document.createElement('div');
+        memesContainer.id = 'memes-container';
+        document.body.insertBefore(memesContainer, document.body.firstChild);
+    }
+    
+    // Принудительно создаем несколько мемов для тестирования
+    console.log('Creating initial test memes'); // Отладка
+    for (let i = 0; i < 3; i++) {
+        createFloatingMeme();
+    }
+    
+    // Запускаем проверку уровня хаоса каждую секунду
     setInterval(applyChaosEffects, 1000);
     
-    // Обработка отправки формы
+    // Принудительно запускаем первый уровень хаоса через 2 секунды
+    setTimeout(() => {
+        console.log('Forcing chaos level 1'); // Отладка
+        if (chaosLevel === 0) {
+            applyChaosEffects();
+        }
+    }, 2000);
+    
+    // Остальные обработчики событий формы...
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         formSubmissions++;
@@ -515,6 +1153,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('captchaCanvas').addEventListener('click', () => {
         currentCaptcha = generateCaptcha();
     });
+
+    // Создаем сетку видео при загрузке страницы
+    createVideoGrid();
+
+    // Создаем кринжометр
+    createCringemeter();
 });
 
 // Запрещаем правый клик
@@ -533,4 +1177,69 @@ document.addEventListener('copy', (e) => {
 document.addEventListener('paste', (e) => {
     e.preventDefault();
     showNotification('Ошибка', 'Вставка запрещена! Вводите все вручную!', 'error');
-}); 
+});
+
+// Функция для создания кринжометра
+function createCringemeter() {
+    const cringemeter = document.createElement('div');
+    cringemeter.className = 'cringemeter';
+    
+    const titleContainer = document.createElement('div');
+    titleContainer.className = 'cringemeter-title';
+    
+    const title = document.createElement('div');
+    title.className = 'title-text';
+    title.textContent = 'КРИНЖОМЕТР';
+    
+    const subtitle = document.createElement('div');
+    subtitle.className = 'subtitle-text';
+    subtitle.textContent = 'Измеритель вашего душевного состояния';
+    
+    titleContainer.appendChild(title);
+    titleContainer.appendChild(subtitle);
+    
+    const heartContainer = document.createElement('div');
+    heartContainer.className = 'heart-container';
+    
+    const heartIcon = document.createElement('img');
+    heartIcon.src = 'img/heart.png';
+    heartIcon.className = 'heart-icon';
+    
+    const heartRate = document.createElement('div');
+    heartRate.className = 'heart-rate';
+    heartRate.textContent = `${currentHeartRate} BPM`;
+    
+    heartContainer.appendChild(heartIcon);
+    heartContainer.appendChild(heartRate);
+    
+    cringemeter.appendChild(titleContainer);
+    cringemeter.appendChild(heartContainer);
+    document.body.appendChild(cringemeter);
+    
+    // Запускаем начальную анимацию сердцебиения
+    updateHeartbeat();
+}
+
+// Функция обновления частоты сердцебиения
+function updateHeartbeat() {
+    const heartIcon = document.querySelector('.heart-icon');
+    const heartRate = document.querySelector('.heart-rate');
+    const cringemeter = document.querySelector('.cringemeter');
+    
+    if (!heartIcon || !heartRate) return;
+    
+    // Обновляем текст
+    heartRate.textContent = `${currentHeartRate} BPM`;
+    
+    // Обновляем анимацию сердцебиения
+    heartIcon.style.animation = `heartbeat ${60/currentHeartRate}s infinite`;
+    
+    // Добавляем эффекты при высоком пульсе
+    if (currentHeartRate >= 180) {
+        cringemeter.classList.add('danger');
+        heartRate.style.color = '#ff0000';
+    } else {
+        cringemeter.classList.remove('danger');
+        heartRate.style.color = '#ff3366';
+    }
+} 
