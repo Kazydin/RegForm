@@ -1666,7 +1666,7 @@ function updateHeartbeat() {
 }
 
 // Добавляем глобальную переменную для отслеживания скорости
-let phraseSpawnInterval = 2000; // Начальный интервал - 2 секунды
+let phraseSpawnInterval = 1000; // Начальный интервал - 2 секунды
 const minPhraseInterval = 100; // Минимальный интервал - 0.1 секунда
 const phraseSpeedIncrease = 100; // Уменьшаем интервал на 0.1 секунду каждый раз
 
@@ -2026,7 +2026,7 @@ function clearAllElements() {
     }
     
     // Сбрасываем интервал появления фраз
-    phraseSpawnInterval = 2000;
+    phraseSpawnInterval = 1000;
     
     // Запускаем создание демонических фраз
     createDemonicPhrase();
