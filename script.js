@@ -1289,14 +1289,12 @@ function updateHeartbeat() {
         setTimeout(() => {
             const cringemeter = document.querySelector('.cringemeter');
             if (cringemeter) {
-                // Очищаем кринжометр
                 cringemeter.innerHTML = '';
                 
-                // Создаем надпись DEAD
                 const deadText = document.createElement('div');
                 deadText.style.cssText = `
                     color: #ff0000 !important;
-                    font-family: 'MB Demonic Tale', cursive !important;
+                    font-family: 'DuskDemon', cursive !important;
                     font-size: 120px !important;
                     font-weight: bold !important;
                     text-align: center !important;
@@ -1306,7 +1304,6 @@ function updateHeartbeat() {
                 `;
                 deadText.textContent = 'DEAD';
                 
-                // Добавляем анимацию пульсации
                 const style = document.createElement('style');
                 style.textContent = `
                     @keyframes pulseDead {
@@ -1362,7 +1359,7 @@ function createDemonicPhrase() {
         left: ${x}px !important;
         top: ${y}px !important;
         color: #ff0000 !important;
-        font-family: 'MB Demonic Tale', cursive !important;
+        font-family: 'DuskDemon', cursive !important;
         text-align: center !important;
         z-index: -1 !important;
         pointer-events: none !important;
@@ -1373,7 +1370,7 @@ function createDemonicPhrase() {
 
     phraseElement.innerHTML = `
         <div class="latin" style="
-            font-family: 'MB Demonic Tale', cursive !important;
+            font-family: 'DuskDemon', cursive !important;
             font-size: 32px !important;
             margin-bottom: 5px !important;
             text-transform: uppercase !important;
@@ -1381,7 +1378,7 @@ function createDemonicPhrase() {
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000 !important;
         ">${phrase.lat}</div>
         <div class="russian" style="
-            font-family: 'MB Demonic Tale', cursive !important;
+            font-family: 'DuskDemon', cursive !important;
             font-size: 24px !important;
             opacity: 0.9 !important;
             letter-spacing: 1px !important;
@@ -1496,10 +1493,11 @@ function clearAllElements() {
     // Обновляем стили для демонической формы
     styleSheet.textContent = `
         @font-face {
-            font-family: 'MB Demonic Tale';
-            src: url('fonts/MB-Demonic_Tale.ttf') format('truetype');
+            font-family: 'DuskDemon';
+            src: url('fonts/DuskDemon.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
+            font-display: swap;
         }
 
         .demonic-form {
@@ -1519,11 +1517,11 @@ function clearAllElements() {
             animation: none !important;
             box-sizing: border-box !important;
             transform: none !important;
-            font-family: 'MB Demonic Tale', cursive !important;
+            font-family: 'DuskDemon', cursive !important;
         }
 
         .demonic-form * {
-            font-family: 'MB Demonic Tale', cursive !important;
+            font-family: 'DuskDemon', cursive !important;
         }
 
         .demonic-form h1 {
@@ -1606,7 +1604,7 @@ function clearAllElements() {
         // Принудительно применяем стили ко всем элементам
         const elements = container.querySelectorAll('*');
         elements.forEach(element => {
-            element.style.setProperty('font-family', "'MB Demonic Tale', cursive", 'important');
+            element.style.setProperty('font-family', "'DuskDemon', cursive", 'important');
         });
 
         // Обновляем заголовок
@@ -1616,7 +1614,7 @@ function clearAllElements() {
             container.insertBefore(title, container.firstChild);
         }
         title.textContent = 'Регистрация в аду';
-        title.style.setProperty('font-family', "'MB Demonic Tale', cursive", 'important');
+        title.style.setProperty('font-family', "'DuskDemon', cursive", 'important');
 
         // Обновляем placeholder'ы
         document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(input => {
